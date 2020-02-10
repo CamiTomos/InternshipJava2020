@@ -1,2 +1,9 @@
+com\arobs\domain\Product.class
 com\arobs\servlet\FirstServlet.class
+com\arobs\servlet\ProductServlet.class
+com\arobs\servlet\WelcomeServlet.class
+com\arobs\localRepository\LocalRepository.class
+com\arobs\servlet\LoginServlet.class
+com\arobs\domain\User.class
+com\arobs\servlet\UserServlet.class
 com\arobs\servlet\Main.class

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-@WebServlet(name = "FirstServlet", urlPatterns = "/test-jsp", initParams = {
+@WebServlet(name = "FirstServlet", urlPatterns = "/test", initParams = {
         @WebInitParam(name = "fName", value = "fValue")
 })
 public class FirstServlet extends HttpServlet {
