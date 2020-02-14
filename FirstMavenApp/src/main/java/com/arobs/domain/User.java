@@ -1,12 +1,27 @@
 package com.arobs.domain;
 
 public class User {
+    private int ID;
     private String username;
     private String password;
 
+
     public User(String username, String password) {
+        this(null,username,password);
+    }
+
+    public User(Integer ID, String username, String password) {
+        this.ID = ID;
         this.username = username;
         this.password = password;
+    }
+
+    public int getID() {
+        return ID;
+    }
+
+    public void setID(int ID) {
+        this.ID = ID;
     }
 
     public String getUsername() {
@@ -33,7 +48,8 @@ public class User {
     @Override
     public String toString() {
         return "User{" +
-                "username='" + username + '\'' +
+                "ID=" + ID +
+                ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 '}';
     }

@@ -4,13 +4,14 @@ import com.arobs.domain.Product;
 import com.arobs.domain.User;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class LocalRepository {
     List<User> users=new ArrayList<>();
     List<Product> products=new ArrayList<>();
-//    Map<User, List<Product>> products
+    Map<String, List<Product>> productsForUser=new HashMap<>();
 
     public LocalRepository() {
         users.add(new User("ana","ana"));
@@ -22,6 +23,13 @@ public class LocalRepository {
         products.add(new Product("salad",39.20));
         products.add(new Product("carrot",24.60));
         products.add(new Product("water",10));
+    }
+
+    public void addProductForUser(String username,List<Product> productList){
+        productsForUser.put(username,productList);
+    }
+    public List<Product> getProductsForUser(String username){
+        return productsForUser.get(username);
     }
 
     public List<User> getUsers() {
@@ -42,6 +50,25 @@ public class LocalRepository {
         for (Product currentProduct:products) {
             if(currentProduct.equals(product)){
                 return currentProduct;
+            }
+        }
+        return null;
+    }
+
+    public Product findProductByName(String product){
+        for (Product currentProduct:products) {
+            if(currentProduct.getName().equals(product)){
+                return currentProduct;
+            }
+        }
+        return null;
+    }
+
+    public User updateUser(User user){
+        for (int i=0;i<users.size();i++){
+            if(users.get(i).getUsername().equals(user.getUsername())){
+                users.set(i,user);
+                return user;
             }
         }
         return null;

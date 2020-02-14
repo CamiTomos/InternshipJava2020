@@ -3,6 +3,7 @@ package com.arobs.servlet;
 import com.arobs.domain.User;
 import com.arobs.localRepository.LocalRepository;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -27,10 +28,25 @@ public class UserServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        PrintWriter printWriter = resp.getWriter();
-        for (User user:localRepository.getUsers()
-             ) {
-            printWriter.println(user.toString());
+        RequestDispatcher requestDispatcher=getServletContext().getRequestDispatcher("/jsp/user.jsp");
+        requestDispatcher.include(req,resp);
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username=req.getParameter("username");
+        String password=req.getParameter("password");
+        User userToUpdate=new User(username,password);
+        User result=localRepository.updateUser(userToUpdate);
+        System.out.println(result.toString());
+        if(result!=null){
+            resp.sendRedirect(req.getContextPath()+"/products");
+        }
+        else {
+            RequestDispatcher requestDispatcher=getServletContext().getRequestDispatcher("/jsp/user.jsp");
+            requestDispatcher.include(req,resp);
+            PrintWriter printWriter=resp.getWriter();
+            printWriter.println("Wrong username");
         }
     }
 }
