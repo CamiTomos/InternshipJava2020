@@ -1,4 +1,4 @@
-package com.arobs.project.domain;
+package com.arobs.project.employee;
 
 import java.util.Objects;
 

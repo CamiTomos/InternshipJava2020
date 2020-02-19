@@ -19,7 +19,8 @@ create table books(
     bookAddedDate datetime not null,
 	primary key(id)
 );
-
+insert into books values(1,"Moby Dick","Herman Melville","awesome novel","2019-01-01 11:11:11");
+select * from books;
 create table tags(
 	id int not null auto_increment,
     tagDescription varchar(20) not null,
