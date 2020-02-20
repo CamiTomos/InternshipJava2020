@@ -11,6 +11,9 @@ create table employees(
     primary key(id)
 );
 
+alter table employees
+modify column employeePassword varchar(50);
+
 create table books(
 	id int not null auto_increment,
     bookTitle varchar(30) not null,
@@ -19,7 +22,7 @@ create table books(
     bookAddedDate datetime not null,
 	primary key(id)
 );
-insert into books values(1,"Moby Dick","Herman Melville","awesome novel","2019-01-01 11:11:11");
+insert into books values(2,"Moby Dick","Herman Melville","awesome novel","2019-01-01 11:11:11");
 select * from books;
 create table tags(
 	id int not null auto_increment,

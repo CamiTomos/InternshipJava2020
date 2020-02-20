@@ -1,5 +1,8 @@
 package com.arobs.project.book;
 
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import java.sql.Timestamp;
 
 public class Book {
@@ -7,6 +10,7 @@ public class Book {
     private String bookTitle;
     private String bookAuthor;
     private String bookDescription;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Timestamp bookAddedDate;
 
     public Book(int id, String bookTitle, String bookAuthor, String bookDescription, Timestamp bookAddedDate) {
@@ -52,7 +56,7 @@ public class Book {
     public void setBookDescription(String bookDescription) {
         this.bookDescription = bookDescription;
     }
-
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     public Timestamp getBookAddedDate() {
         return bookAddedDate;
     }
@@ -71,10 +75,4 @@ public class Book {
                 ", bookAddedDate=" + bookAddedDate +
                 '}';
     }
-
-//    public static void main(String[] args) {
-//        Book book=new Book(1,"a","a","a", Timestamp.valueOf("2020-01-01 10:10:10"));
-//        System.out.println(book.getBookAddedDate().getTime());
-//        System.out.println(book.toString());
-//    }
 }

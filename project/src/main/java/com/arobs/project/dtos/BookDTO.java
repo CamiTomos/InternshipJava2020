@@ -1,14 +1,17 @@
 package com.arobs.project.dtos;
 
-import java.sql.Timestamp;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.sql.Date;
 
 public class BookDTO {
     private String bookTitle;
     private String bookAuthor;
     private String bookDescription;
-    private Timestamp bookAddedDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private String bookAddedDate;
 
-    public BookDTO(String bookTitle, String bookAuthor, String bookDescription, Timestamp bookAddedDate) {
+    public BookDTO(String bookTitle, String bookAuthor, String bookDescription, String bookAddedDate) {
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
@@ -38,12 +41,12 @@ public class BookDTO {
     public void setBookDescription(String bookDescription) {
         this.bookDescription = bookDescription;
     }
-
-    public Timestamp getBookAddedDate() {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    public String getBookAddedDate() {
         return bookAddedDate;
     }
-
-    public void setBookAddedDate(Timestamp bookAddedDate) {
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    public void setBookAddedDate(String bookAddedDate) {
         this.bookAddedDate = bookAddedDate;
     }
 

@@ -18,7 +18,7 @@ public class SpringFoxConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.arobs.project"))
-                .paths(regex("/library-app.*"))
+                .paths(PathSelectors.any())
                 .build();
     }
 }

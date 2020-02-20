@@ -1,8 +1,5 @@
 package com.arobs.project;
 
-import com.arobs.project.book.Book;
-import com.arobs.project.book.BookRepository;
-import com.arobs.project.book.BookService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
