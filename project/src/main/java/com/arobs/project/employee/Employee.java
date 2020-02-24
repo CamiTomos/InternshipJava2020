@@ -5,11 +5,11 @@ import java.util.Objects;
 public class Employee {
     private int id;
     private String employeeName;
-    private Role employeeRole;
+    private String employeeRole;
     private String employeePassword;
     private String employeeEmail;
 
-    public Employee(int id, String employeeName, Role employeeRole, String employeePassword, String employeeEmail) {
+    public Employee(int id, String employeeName, String employeeRole, String employeePassword, String employeeEmail) {
         this.id = id;
         this.employeeName = employeeName;
         this.employeeRole = employeeRole;
@@ -17,8 +17,8 @@ public class Employee {
         this.employeeEmail = employeeEmail;
     }
 
-    public Employee(String employeeName, Role employeeRole, String employeePassword, String employeeEmail) {
-        this(1,employeeName,employeeRole,employeePassword,employeeEmail);
+    public Employee(String employeeName, String employeeRole, String employeePassword, String employeeEmail) {
+        this(1, employeeName, employeeRole, employeePassword, employeeEmail);
     }
 
     public int getId() {
@@ -37,11 +37,11 @@ public class Employee {
         this.employeeName = employeeName;
     }
 
-    public Role getEmployeeRole() {
+    public String getEmployeeRole() {
         return employeeRole;
     }
 
-    public void setEmployeeRole(Role employeeRole) {
+    public void setEmployeeRole(String employeeRole) {
         this.employeeRole = employeeRole;
     }
 

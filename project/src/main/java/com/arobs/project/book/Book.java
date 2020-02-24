@@ -1,17 +1,33 @@
 package com.arobs.project.book;
 
-
+import com.arobs.project.copy.Copy;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
+import javax.persistence.*;
+import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.HashSet;
+import java.util.Set;
 
-public class Book {
+@Entity
+@Table(name = "books")
+public class Book implements Serializable {
+    @Id
+    @GeneratedValue
     private int id;
+    @Column(name = "bookTitle")
     private String bookTitle;
+    @Column(name = "bookAuthor")
     private String bookAuthor;
+    @Column(name = "bookDescription")
     private String bookDescription;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "bookAddedDate")
     private Timestamp bookAddedDate;
+    @OneToMany(mappedBy = "book")
+    private Set<Copy> copies=new HashSet<>();
+
+    public Book() {
+    }
 
     public Book(int id, String bookTitle, String bookAuthor, String bookDescription, Timestamp bookAddedDate) {
         this.id = id;
@@ -56,7 +72,7 @@ public class Book {
     public void setBookDescription(String bookDescription) {
         this.bookDescription = bookDescription;
     }
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+
     public Timestamp getBookAddedDate() {
         return bookAddedDate;
     }
