@@ -1,10 +1,13 @@
 package com.arobs.project.copy;
 
 import com.arobs.project.book.Book;
+import com.arobs.project.bookRent.BookRent;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "copies")
@@ -13,13 +16,19 @@ public class Copy implements Serializable {
     @GeneratedValue
     @Column(name = "id")
     private int id;
+
     @Column(name = "copyFlag")
     private boolean copyFlag;
+
     @Column(name = "copyStatus")
     private String copyStatus;
+
     @ManyToOne
     @JoinColumn(name = "bookID")
     private Book book;
+
+    @OneToMany(mappedBy = "copy")
+    private Set<BookRent> bookRents = new HashSet<>();
 
     public Copy() {
     }
@@ -56,6 +65,14 @@ public class Copy implements Serializable {
         this.book = book;
     }
 
+    public Set<BookRent> getBookRents() {
+        return bookRents;
+    }
+
+    public void setBookRents(Set<BookRent> bookRents) {
+        this.bookRents = bookRents;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -67,5 +84,16 @@ public class Copy implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Copy{" +
+                "id=" + id +
+                ", copyFlag=" + copyFlag +
+                ", copyStatus='" + copyStatus + '\'' +
+                ", book=" + book +
+                ", bookRents=" + bookRents +
+                '}';
     }
 }

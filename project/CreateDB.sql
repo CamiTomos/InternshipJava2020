@@ -13,7 +13,7 @@ create table employees(
 
 alter table employees
 modify column employeePassword varchar(50);
-
+select * from employees;
 create table books(
 	id int not null auto_increment,
     bookTitle varchar(30) not null,
@@ -39,6 +39,10 @@ create table bookstags(
     primary key(id)
 );
 
+alter table bookstags
+drop column id;
+select * from bookstags;
+
 create table copies(
 	id int not null auto_increment,
     copyFlag bool not null,
@@ -63,6 +67,14 @@ create table bookrents(
 	foreign key(copyID) references copies(id) on delete cascade,
     primary key(id)
 );
+
+-- alter table bookrents
+-- drop constraint bookrents_ibfk_2;
+
+alter table bookrents
+drop column bookID;
+
+select * from bookrents;
 
 create table rentrequests(
 	id int not null auto_increment,
