@@ -2,6 +2,8 @@ package com.arobs.project.mappers;
 
 import com.arobs.project.book.Book;
 import com.arobs.project.dtos.BookDTO;
+import com.arobs.project.dtos.EmployeeDTO;
+import com.arobs.project.employee.Employee;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -26,5 +28,23 @@ public class ProjectModelMapper {
                 bookDTO.getBookAuthor(),
                 bookDTO.getBookDescription(),
                 new Timestamp(myFormat.parse(bookDTO.getBookAddedDate()).getTime()));
+    }
+
+    public static EmployeeDTO convertEmployeeToDTO(Employee employee) {
+        return new EmployeeDTO(employee.getId(),
+                employee.getEmployeeName(),
+                employee.getEmployeeRole(),
+                employee.getEmployeePassword(),
+                employee.getEmployeeEmail()
+        );
+//        return modelMapper.map(book,BookDTO.class); Doesn't work
+    }
+
+    public static Employee convertDTOtoEmployee(EmployeeDTO employeeDTO) {
+        return new Employee(employeeDTO.getId(),
+                employeeDTO.getEmployeeName(),
+                employeeDTO.getEmployeeRole(),
+                employeeDTO.getEmployeePassword(),
+                employeeDTO.getEmployeeEmail());
     }
 }

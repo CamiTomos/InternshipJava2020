@@ -92,8 +92,8 @@ public class RentRequest implements Serializable {
                 "id=" + id +
                 ", rentrequestRequestDate=" + rentrequestRequestDate +
                 ", rentrequestStatus='" + rentrequestStatus + '\'' +
-                ", employee=" + employee +
-                ", book=" + book +
+//                ", employee=" + employee +
+//                ", book=" + book +
                 '}';
     }
 }

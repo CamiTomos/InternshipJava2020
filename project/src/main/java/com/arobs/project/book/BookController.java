@@ -23,35 +23,37 @@ public class BookController {
     }
 
     @GetMapping(value = "/books", produces = "application/json")
-    List<BookDTO> handleGetAllBooks() {
+    public List<BookDTO> handleGetAllBooks() {
         log.info("BookController: get all books...");
         return bookService.getAllBooks();
     }
 
     @PostMapping(value = "/books", produces = "application/json")
-    ResponseEntity handleInsertBook(@RequestBody BookDTO bookDTO) {
+    public ResponseEntity<?> handleInsertBook(@RequestBody BookDTO bookDTO) {
         try {
-            return new ResponseEntity(bookService.insertBook(bookDTO), HttpStatus.OK);
+            return new ResponseEntity<>(bookService.insertBook(bookDTO), HttpStatus.OK);
 
         } catch (ParseException ex) {
-            return new ResponseEntity("Date is not valid", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Date is not valid", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping(value = "/books")
-    ResponseEntity handleUpdateBook(@RequestBody BookDTO bookDTO) {
+    public ResponseEntity<?> handleUpdateBook(@RequestBody BookDTO bookDTO) {
         try {
-            return new ResponseEntity(bookService.updateBook(bookDTO), HttpStatus.OK);
+            return new ResponseEntity<>(bookService.updateBook(bookDTO), HttpStatus.OK);
 
         } catch (ParseException ex) {
-            return new ResponseEntity("Date is not valid", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Date is not valid", HttpStatus.BAD_REQUEST);
         }
     }
 
     @DeleteMapping(value = "/books/{id}")
     public ResponseEntity<String> handleDeleteBook(@PathVariable int id) {
         if (bookService.deleteBook(id)) {
-            return new ResponseEntity("Book was deleted successfully!", HttpStatus.OK);
-        } else return new ResponseEntity("Book was not deleted!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Book was deleted successfully!", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Book was not deleted!", HttpStatus.BAD_REQUEST);
+        }
     }
 }

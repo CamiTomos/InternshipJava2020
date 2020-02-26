@@ -5,12 +5,11 @@ import com.arobs.project.employee.Employee;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "bookrent")
+@Table(name = "bookrents")
 public class BookRent implements Serializable {
     @Id
     @Column(name = "id")
@@ -21,7 +20,7 @@ public class BookRent implements Serializable {
     private Timestamp bookrentRentalDate;
 
     @Column(name = "bookrentReturnDate")
-    private Time bookrentReturnDate;
+    private Timestamp bookrentReturnDate;
 
     @Column(name = "bookrentStatus")
     private String bookrentStatus;
@@ -56,11 +55,11 @@ public class BookRent implements Serializable {
         this.bookrentRentalDate = bookrentRentalDate;
     }
 
-    public Time getBookrentReturnDate() {
+    public Timestamp getBookrentReturnDate() {
         return bookrentReturnDate;
     }
 
-    public void setBookrentReturnDate(Time bookrentReturnDate) {
+    public void setBookrentReturnDate(Timestamp bookrentReturnDate) {
         this.bookrentReturnDate = bookrentReturnDate;
     }
 

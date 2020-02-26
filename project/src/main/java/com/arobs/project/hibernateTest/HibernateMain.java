@@ -14,7 +14,7 @@ public class HibernateMain {
     public static void main(String[] args) {
 //        Session session = HibernateUtil.getSessionFactory().openSession();
 //        session.beginTransaction();
-        
+
         // Check database version
 //        String sql = "select version()";
 //
@@ -50,8 +50,10 @@ public class HibernateMain {
 //        }
 
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
             List<Employee> employees = session.createQuery("from Employee", Employee.class).list();
             employees.forEach(e -> System.out.println(e.getEmployeeEmail()));
+            transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();

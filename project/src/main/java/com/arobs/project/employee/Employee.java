@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
+@Entity(name = "Employee")
 @Table(name = "employees")
 public class Employee implements Serializable {
     @Id
@@ -139,9 +139,9 @@ public class Employee implements Serializable {
                 ", employeeRole='" + employeeRole + '\'' +
                 ", employeePassword='" + employeePassword + '\'' +
                 ", employeeEmail='" + employeeEmail + '\'' +
-                ", rentRequests=" + rentRequests +
-                ", bookRents=" + bookRents +
-                ", bookRequests=" + bookRequests +
+//                ", rentRequests=" + rentRequests +
+//                ", bookRents=" + bookRents +
+//                ", bookRequests=" + bookRequests +
                 '}';
     }
 }

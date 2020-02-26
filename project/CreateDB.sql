@@ -22,6 +22,13 @@ create table books(
     bookAddedDate datetime not null,
 	primary key(id)
 );
+
+ALTER TABLE employees 
+ADD CONSTRAINT unique_email UNIQUE(employeeEmail);
+
+delete from employees where id=4;
+
+
 insert into books values(2,"Moby Dick","Herman Melville","awesome novel","2019-01-01 11:11:11");
 select * from books;
 create table tags(
