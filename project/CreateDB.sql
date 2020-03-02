@@ -26,6 +26,9 @@ create table books(
 ALTER TABLE employees 
 ADD CONSTRAINT unique_email UNIQUE(employeeEmail);
 
+ALTER TABLE tags 
+ADD CONSTRAINT unique_tag UNIQUE(tagDescription);
+
 delete from employees where id=4;
 
 
@@ -36,6 +39,9 @@ create table tags(
     tagDescription varchar(20) not null,
     primary key(id)
 );
+select * from tags;
+select * from books;
+select * from bookstags;
 
 create table bookstags(
 	id int not null auto_increment,
@@ -45,6 +51,7 @@ create table bookstags(
 	foreign key(tagID) references tags(id) on delete cascade,
     primary key(id)
 );
+select * from bookstags;
 
 alter table bookstags
 drop column id;

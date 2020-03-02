@@ -24,8 +24,9 @@ public class BookController {
 
     @GetMapping(value = "/books", produces = "application/json")
     public List<BookDTO> handleGetAllBooks() {
-        log.info("BookController: get all books...");
-        return bookService.getAllBooks();
+//        log.info("BookController: get all books...");
+//        return bookService.getAllBooks();
+        return null;
     }
 
     @PostMapping(value = "/books", produces = "application/json")
@@ -40,12 +41,13 @@ public class BookController {
 
     @PutMapping(value = "/books")
     public ResponseEntity<?> handleUpdateBook(@RequestBody BookDTO bookDTO) {
-        try {
-            return new ResponseEntity<>(bookService.updateBook(bookDTO), HttpStatus.OK);
-
-        } catch (ParseException ex) {
-            return new ResponseEntity<>("Date is not valid", HttpStatus.BAD_REQUEST);
-        }
+//        try {
+//            return new ResponseEntity<>(bookService.updateBook(bookDTO), HttpStatus.OK);
+//
+//        } catch (ParseException ex) {
+//            return new ResponseEntity<>("Date is not valid", HttpStatus.BAD_REQUEST);
+//        }
+        return null;
     }
 
     @DeleteMapping(value = "/books/{id}")

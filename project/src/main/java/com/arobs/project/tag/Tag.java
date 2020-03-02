@@ -13,23 +13,21 @@ import java.util.Set;
 public class Tag implements Serializable {
     @Id
     @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "tagDescription")
     private String tagDescription;
 
-    @ManyToMany(cascade = {
-            CascadeType.PERSIST,
-            CascadeType.MERGE
-    })
-    @JoinTable(name = "bookstags",
-            joinColumns = @JoinColumn(name = "tagID"),
-            inverseJoinColumns = @JoinColumn(name = "bookID")
-    )
+    @ManyToMany(mappedBy = "tags")
     private Set<Book> books = new HashSet<>();
 
     public Tag() {
+    }
+
+    public Tag(int id, String tagDescription) {
+        this.id=id;
+        this.tagDescription=tagDescription;
     }
 
     public int getId() {
@@ -74,7 +72,7 @@ public class Tag implements Serializable {
         return "Tag{" +
                 "id=" + id +
                 ", tagDescription='" + tagDescription + '\'' +
-                ", books=" + books +
+//                ", books=" + books +
                 '}';
     }
 }

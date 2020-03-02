@@ -15,7 +15,7 @@ import java.util.Set;
 public class Book implements Serializable {
     @Id
     @Column(name = "id")
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
     @Column(name = "bookTitle")
@@ -33,7 +33,15 @@ public class Book implements Serializable {
     @OneToMany(mappedBy = "book")
     private Set<Copy> copies = new HashSet<>();
 
-    @ManyToMany(mappedBy = "books")
+    @ManyToMany(cascade = {
+//            CascadeType.ALL
+            CascadeType.PERSIST,
+            CascadeType.MERGE
+    })
+    @JoinTable(name = "bookstags",
+            joinColumns = @JoinColumn(name = "bookID"),
+            inverseJoinColumns = @JoinColumn(name = "tagID")
+    )
     private Set<Tag> tags = new HashSet<>();
 
     @OneToMany(mappedBy = "book")
@@ -42,17 +50,15 @@ public class Book implements Serializable {
     public Book() {
     }
 
-
-    public Book(int id, String bookTitle, String bookAuthor, String bookDescription, Timestamp bookAddedDate) {
+    public Book(int id, String bookTitle, String bookAuthor, String bookDescription) {
         this.id = id;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
-        this.bookAddedDate = bookAddedDate;
     }
 
-    public Book(String bookTitle, String bookAuthor, String bookDescription, Timestamp bookAddedDate) {
-        this(1, bookTitle, bookAuthor, bookDescription, bookAddedDate);
+    public Book(String bookTitle, String bookAuthor, String bookDescription) {
+        this(1, bookTitle, bookAuthor, bookDescription);
     }
 
     public int getId() {

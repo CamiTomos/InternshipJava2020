@@ -4,6 +4,7 @@ import com.arobs.project.dtos.EmployeeDTO;
 import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,34 +19,42 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
+    @Transactional
     public List<EmployeeDTO> getAllEmployees() {
         List<Employee> employees = hibernateRepository.getAllEmployees();
         List<EmployeeDTO> employeesDTO = new ArrayList<>(employees.size());
-        for (Employee employee : employees
-        ) {
+        for (Employee employee : employees) {
             employeesDTO.add(ProjectModelMapper.convertEmployeeToDTO(employee));
         }
         return employeesDTO;
     }
 
     @Override
+    @Transactional
     public EmployeeDTO insertEmployee(EmployeeDTO employeeDTO) {
         Employee employee = ProjectModelMapper.convertDTOtoEmployee(employeeDTO);
         return ProjectModelMapper.convertEmployeeToDTO(hibernateRepository.insertEmployee(employee));
     }
 
     @Override
+    @Transactional
     public boolean deleteEmployee(int id) {
-        return hibernateRepository.deleteEmployee(id);
+        Employee employee=hibernateRepository.findById(id);
+        return hibernateRepository.deleteEmployee(employee);
     }
 
     @Override
+    @Transactional
     public EmployeeDTO updateEmployee(EmployeeDTO employeeDTO) {
         Employee employee = ProjectModelMapper.convertDTOtoEmployee(employeeDTO);
-        return ProjectModelMapper.convertEmployeeToDTO(hibernateRepository.updateEmployee(employee));
+        if(findEmployeeByID(employee.getId())!=null){
+            return ProjectModelMapper.convertEmployeeToDTO(hibernateRepository.updateEmployee(employee));
+        }
+        return null;
     }
 
     @Override
+    @Transactional
     public EmployeeDTO findEmployeeByID(int id) {
         return ProjectModelMapper.convertEmployeeToDTO(hibernateRepository.findById(id));
     }
