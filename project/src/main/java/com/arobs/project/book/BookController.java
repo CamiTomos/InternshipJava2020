@@ -8,9 +8,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.util.List;
-
 @RestController
 @RequestMapping("/library-app")
 public class BookController {
@@ -23,31 +20,32 @@ public class BookController {
     }
 
     @GetMapping(value = "/books", produces = "application/json")
-    public List<BookDTO> handleGetAllBooks() {
-//        log.info("BookController: get all books...");
-//        return bookService.getAllBooks();
-        return null;
+    public ResponseEntity<?> handleGetAllBooks() {
+        log.info("BookController: get all books...");
+        return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/books/{id}", produces = "application/json")
+    public ResponseEntity<?> handleFindBookById(@PathVariable int id) {
+        BookDTO foundBook = bookService.findById(id);
+        if (foundBook != null) {
+            return new ResponseEntity<>(foundBook, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Book with given id does not exist!", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/books", produces = "application/json")
     public ResponseEntity<?> handleInsertBook(@RequestBody BookDTO bookDTO) {
-        try {
-            return new ResponseEntity<>(bookService.insertBook(bookDTO), HttpStatus.OK);
-
-        } catch (ParseException ex) {
-            return new ResponseEntity<>("Date is not valid", HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(bookService.insertBook(bookDTO), HttpStatus.OK);
     }
 
     @PutMapping(value = "/books")
     public ResponseEntity<?> handleUpdateBook(@RequestBody BookDTO bookDTO) {
-//        try {
-//            return new ResponseEntity<>(bookService.updateBook(bookDTO), HttpStatus.OK);
-//
-//        } catch (ParseException ex) {
-//            return new ResponseEntity<>("Date is not valid", HttpStatus.BAD_REQUEST);
-//        }
-        return null;
+        BookDTO updatedBook = bookService.updateBook(bookDTO);
+        if (null != updatedBook) {
+            return new ResponseEntity<>(updatedBook, HttpStatus.OK);
+        }
+        return new ResponseEntity<>("Book can not be updated!", HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/books/{id}")
@@ -58,4 +56,5 @@ public class BookController {
             return new ResponseEntity<>("Book was not deleted!", HttpStatus.BAD_REQUEST);
         }
     }
+
 }

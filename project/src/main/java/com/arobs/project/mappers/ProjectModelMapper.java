@@ -23,7 +23,7 @@ public class ProjectModelMapper {
         return modelMapper.map(book, BookDTO.class); //Doesn't work
     }
 
-    public static Book convertDTOtoBook(BookDTO bookDTO) throws ParseException {
+    public static Book convertDTOtoBook(BookDTO bookDTO)  {
 //        return new Book(bookDTO.getId(),
 //                bookDTO.getBookTitle(),
 //                bookDTO.getBookAuthor(),

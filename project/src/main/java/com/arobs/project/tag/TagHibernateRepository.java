@@ -17,6 +17,10 @@ public class TagHibernateRepository {
         this.sessionFactory = sessionFactory;
     }
 
+    public List<Tag> getAllTags() {
+        Session session = sessionFactory.getCurrentSession();
+        return session.createQuery("from Tag").getResultList();
+    }
 
     public Tag insertTag(Tag tag) {
         Session session = sessionFactory.getCurrentSession();
@@ -25,9 +29,9 @@ public class TagHibernateRepository {
     }
 
     public Tag getTagByDescription(String description) {
+//        refactor this
         Session session = sessionFactory.getCurrentSession();
-        List<Tag> tags = session.createQuery("from Tag")
-                .getResultList();
+        List<Tag> tags = session.createQuery("from Tag").getResultList();
         for (Tag tag : tags) {
             if (tag.getTagDescription().equals(description)) {
                 return tag;
@@ -36,14 +40,21 @@ public class TagHibernateRepository {
         return null;
     }
 
-    public boolean deleteTag(Tag tag){
-        Session session=sessionFactory.getCurrentSession();
+    public boolean deleteTag(Tag tag) {
+        Session session = sessionFactory.getCurrentSession();
         session.delete(tag);
         return true;
     }
 
-    public Tag findById(int id){
-        Session session=sessionFactory.getCurrentSession();
-        return session.get(Tag.class,id);
+    public Tag updateTag(Tag tag) {
+        Session session = sessionFactory.getCurrentSession();
+        Tag foundTag = session.get(Tag.class, tag.getId());
+        foundTag.setTagDescription(tag.getTagDescription());
+        return foundTag;
+    }
+
+    public Tag findTagById(int id) {
+        Session session = sessionFactory.getCurrentSession();
+        return session.get(Tag.class, id);
     }
 }
