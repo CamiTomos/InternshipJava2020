@@ -41,7 +41,7 @@ public class Copy implements Serializable {
         this.id = id;
     }
 
-    public boolean isCopyFlag() {
+    public boolean getCopyFlag() {
         return copyFlag;
     }
 

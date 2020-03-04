@@ -1,13 +1,12 @@
 package com.arobs.project.mappers;
 
 import com.arobs.project.book.Book;
-import com.arobs.project.dtos.BookDTO;
-import com.arobs.project.dtos.EmployeeDTO;
-import com.arobs.project.dtos.TagDTO;
+import com.arobs.project.bookRequest.BookRequest;
+import com.arobs.project.copy.Copy;
+import com.arobs.project.dtos.*;
 import com.arobs.project.employee.Employee;
 import com.arobs.project.tag.Tag;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class ProjectModelMapper {
@@ -23,7 +22,7 @@ public class ProjectModelMapper {
         return modelMapper.map(book, BookDTO.class); //Doesn't work
     }
 
-    public static Book convertDTOtoBook(BookDTO bookDTO)  {
+    public static Book convertDTOtoBook(BookDTO bookDTO) {
 //        return new Book(bookDTO.getId(),
 //                bookDTO.getBookTitle(),
 //                bookDTO.getBookAuthor(),
@@ -62,5 +61,21 @@ public class ProjectModelMapper {
 //                tagDTO.getTagDescription()
 //        );
         return modelMapper.map(tagDTO, Tag.class);
+    }
+
+    public static CopyDTO convertCopyToDTO(Copy copy) {
+        return modelMapper.map(copy, CopyDTO.class);
+    }
+
+    public static Copy convertDTOtoCopy(CopyDTO copyDTO) {
+        return modelMapper.map(copyDTO, Copy.class);
+    }
+
+    public static BookRequestDTO convertBookRequestToDTO(BookRequest bookRequest) {
+        return modelMapper.map(bookRequest, BookRequestDTO.class);
+    }
+
+    public static BookRequest convertDTOtoBookRequest(BookRequestDTO bookRequestDTO) {
+        return modelMapper.map(bookRequestDTO, BookRequest.class);
     }
 }
