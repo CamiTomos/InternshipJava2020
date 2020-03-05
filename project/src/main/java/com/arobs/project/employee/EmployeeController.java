@@ -31,17 +31,25 @@ public class EmployeeController {
         if (service.deleteEmployee(id)) {
             return new ResponseEntity<>("Employee successfully deleted!", HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("Employee was not deleted!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Employee with given id does not exist!", HttpStatus.NOT_FOUND);
         }
     }
 
     @PutMapping(value = "/employees")
     public ResponseEntity<?> handleUpdateEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        return new ResponseEntity<>(service.updateEmployee(employeeDTO), HttpStatus.OK);
+        EmployeeDTO updatedEmployee = service.updateEmployee(employeeDTO);
+        if (null == updatedEmployee) {
+            return new ResponseEntity<>("The given employee does not exist!", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 
     @GetMapping(value = "/employees/{id}")
-    public ResponseEntity<EmployeeDTO> handleFindEmployeeById(@PathVariable int id) {
-        return new ResponseEntity<>(service.findEmployeeByID(id), HttpStatus.OK);
+    public ResponseEntity<?> handleFindEmployeeById(@PathVariable int id) {
+        EmployeeDTO foundEmployee = service.findEmployeeByID(id);
+        if (null == foundEmployee) {
+            return new ResponseEntity<>("The given employee does not exist!", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(foundEmployee, HttpStatus.OK);
     }
 }

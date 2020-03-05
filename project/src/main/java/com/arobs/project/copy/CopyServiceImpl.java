@@ -49,7 +49,6 @@ public class CopyServiceImpl implements CopyService {
             throw new ValidationException("The book with given id does not exist!");
         }
         Copy copyToInsert = ProjectModelMapper.convertDTOtoCopy(copyDTO);
-        copyToInsert.setBook(ProjectModelMapper.convertDTOtoBook(foundBook));
         return ProjectModelMapper.convertCopyToDTO(hibernateRepository.insertCopy(copyToInsert));
     }
 

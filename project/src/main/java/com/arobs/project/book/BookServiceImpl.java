@@ -3,6 +3,7 @@ package com.arobs.project.book;
 import com.arobs.project.dtos.BookDTO;
 import com.arobs.project.dtos.TagDTO;
 import com.arobs.project.mappers.ProjectModelMapper;
+import com.arobs.project.tag.Tag;
 import com.arobs.project.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,8 +37,7 @@ public class BookServiceImpl implements BookService {
     public List<BookDTO> getAllBooks() {
         List<Book> books = bookRepository.getAllBooks();
         List<BookDTO> bookDTOS = new ArrayList<>(books.size());
-        for (Book book : books
-        ) {
+        for (Book book : books) {
             bookDTOS.add(ProjectModelMapper.convertBookToDTO(book));
         }
         return bookDTOS;
@@ -48,9 +48,12 @@ public class BookServiceImpl implements BookService {
     public BookDTO insertBook(BookDTO bookDTO) {
         Set<TagDTO> tagDTOS = bookDTO.getTags();
         for (TagDTO tagDTO : tagDTOS) {
-            if (tagService.findTagByDescription(tagDTO.getTagDescription()) == null) {
+            TagDTO foundTag = tagService.findTagByDescription(tagDTO.getTagDescription());
+            if (null == foundTag) {
                 TagDTO createdTag = tagService.insertTag(tagDTO);
                 tagDTO.setId(createdTag.getId());
+            } else {
+                tagDTO.setId(foundTag.getId());
             }
         }
         Book book = ProjectModelMapper.convertDTOtoBook(bookDTO);
@@ -74,6 +77,16 @@ public class BookServiceImpl implements BookService {
     public BookDTO updateBook(BookDTO bookDTO) {
         Book foundBook = bookRepository.findBookById(bookDTO.getId());
         if (foundBook != null) {
+            Set<TagDTO> tagDTOS = bookDTO.getTags();
+            for (TagDTO tagDTO : tagDTOS) {
+                TagDTO foundTag = tagService.findTagByDescription(tagDTO.getTagDescription());
+                if (null == foundTag) {
+                    TagDTO createdTag = tagService.insertTag(tagDTO);
+                    tagDTO.setId(createdTag.getId());
+                } else {
+                    tagDTO.setId(foundTag.getId());
+                }
+            }
             return ProjectModelMapper.convertBookToDTO(bookRepository.updateBook(ProjectModelMapper.convertDTOtoBook(bookDTO)));
         }
         return null;

@@ -36,7 +36,14 @@ public class EmployeeHibernateRepository {
 
     public Employee updateEmployee(Employee employee) {
         Session session = sessionFactory.getCurrentSession();
-        session.update(employee);
+        String hql = "update Employee set employeeEmail= :email, employeeName= :name, employeeRole= :role, employeePassword= MD5(:password) where id= :id";
+        session.createQuery(hql)
+                .setParameter("email", employee.getEmployeeEmail())
+                .setParameter("name", employee.getEmployeeName())
+                .setParameter("role", employee.getEmployeeRole())
+                .setParameter("password", employee.getEmployeePassword())
+                .setParameter("id", employee.getId())
+                .executeUpdate();
         return employee;
     }
 

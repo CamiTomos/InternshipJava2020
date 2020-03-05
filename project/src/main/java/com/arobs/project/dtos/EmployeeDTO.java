@@ -7,6 +7,9 @@ public class EmployeeDTO {
     private String employeePassword;
     private String employeeEmail;
 
+    public EmployeeDTO() {
+    }
+
     public EmployeeDTO(int id, String employeeName, String employeeRole, String employeePassword, String employeeEmail) {
         this.id = id;
         this.employeeName = employeeName;

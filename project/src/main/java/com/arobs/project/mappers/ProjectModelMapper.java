@@ -32,21 +32,22 @@ public class ProjectModelMapper {
     }
 
     public static EmployeeDTO convertEmployeeToDTO(Employee employee) {
-        return new EmployeeDTO(employee.getId(),
-                employee.getEmployeeName(),
-                employee.getEmployeeRole(),
-                employee.getEmployeePassword(),
-                employee.getEmployeeEmail()
-        );
-//        return modelMapper.map(book,BookDTO.class); Doesn't work
+//        return new EmployeeDTO(employee.getId(),
+//                employee.getEmployeeName(),
+//                employee.getEmployeeRole(),
+//                employee.getEmployeePassword(),
+//                employee.getEmployeeEmail()
+//        );
+        return modelMapper.map(employee,EmployeeDTO.class);
     }
 
     public static Employee convertDTOtoEmployee(EmployeeDTO employeeDTO) {
-        return new Employee(employeeDTO.getId(),
-                employeeDTO.getEmployeeName(),
-                employeeDTO.getEmployeeRole(),
-                employeeDTO.getEmployeePassword(),
-                employeeDTO.getEmployeeEmail());
+//        return new Employee(employeeDTO.getId(),
+//                employeeDTO.getEmployeeName(),
+//                employeeDTO.getEmployeeRole(),
+//                employeeDTO.getEmployeePassword(),
+//                employeeDTO.getEmployeeEmail());
+        return modelMapper.map(employeeDTO,Employee.class);
     }
 
     public static TagDTO convertTagToDTO(Tag tag) {

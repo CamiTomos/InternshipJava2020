@@ -1,7 +1,6 @@
 package com.arobs.project.bookRequest;
 
 import com.arobs.project.dtos.BookRequestDTO;
-import com.arobs.project.dtos.BookRequestDTO;
 import com.arobs.project.exception.ValidationException;
 
 import java.util.List;
@@ -13,7 +12,7 @@ public interface BookRequestService {
 
     boolean deleteBookRequest(int id);
 
-    BookRequestDTO updateBookRequest(BookRequestDTO bookRequestDTO);
+    BookRequestDTO updateBookRequest(BookRequestDTO bookRequestDTO) throws ValidationException;
 
     BookRequestDTO findBookRequestById(int id);
 }
