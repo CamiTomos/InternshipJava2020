@@ -18,8 +18,8 @@ public class CopyController {
     }
 
     @GetMapping(value = "/copies")
-    public ResponseEntity<?> handleGetAllCopies() {
-        return new ResponseEntity<>(copyService.getAllCopies(), HttpStatus.OK);
+    public ResponseEntity<?> handleFindAllCopies() {
+        return new ResponseEntity<>(copyService.findAllCopies(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/copies/{id}")
@@ -35,7 +35,6 @@ public class CopyController {
     public ResponseEntity<?> handleInsertCopy(@RequestBody CopyDTO copyDTO) {
         try {
             return new ResponseEntity<>(copyService.insertCopy(copyDTO), HttpStatus.OK);
-
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }

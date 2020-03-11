@@ -16,7 +16,7 @@ public class BookRequestHibernateRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<BookRequest> getAllBookRequests() {
+    public List<BookRequest> findAllBookRequests() {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("from BookRequest").getResultList();
     }

@@ -35,7 +35,7 @@ public class BookRequest implements Serializable {
     @Column(name = "bookrequestStatus")
     private String bookrequestStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employeeID")
     private Employee employee;
 

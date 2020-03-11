@@ -22,8 +22,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public List<EmployeeDTO> getAllEmployees() {
-        List<Employee> employees = hibernateRepository.getAllEmployees();
+    public List<EmployeeDTO> findAllEmployees() {
+        List<Employee> employees = hibernateRepository.findAllEmployees();
         List<EmployeeDTO> employeesDTO = new ArrayList<>(employees.size());
         for (Employee employee : employees) {
             employeesDTO.add(ProjectModelMapper.convertEmployeeToDTO(employee));

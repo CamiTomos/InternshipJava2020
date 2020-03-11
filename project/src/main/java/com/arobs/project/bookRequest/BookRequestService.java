@@ -6,7 +6,7 @@ import com.arobs.project.exception.ValidationException;
 import java.util.List;
 
 public interface BookRequestService {
-    List<BookRequestDTO> getAllBookRequests();
+    List<BookRequestDTO> findAllBookRequests();
 
     BookRequestDTO insertBookRequest(BookRequestDTO bookRequestDTO) throws ValidationException;
 

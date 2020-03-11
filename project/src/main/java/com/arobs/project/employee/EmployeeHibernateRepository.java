@@ -18,7 +18,7 @@ public class EmployeeHibernateRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Employee> getAllEmployees() {
+    public List<Employee> findAllEmployees() {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("from Employee", Employee.class).getResultList();
     }

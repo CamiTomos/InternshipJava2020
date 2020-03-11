@@ -46,7 +46,7 @@ public class BookHibernateRepository {
         return book;
     }
 
-    public List<Book> getAllBooks() {
+    public List<Book> findAllBooks() {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("from Book", Book.class).getResultList();
     }

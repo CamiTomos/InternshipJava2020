@@ -16,7 +16,7 @@ public class CopyHibernateRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Copy> getAllCopies() {
+    public List<Copy> findAllCopies() {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("from Copy").getResultList();
     }

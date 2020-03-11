@@ -1,6 +1,5 @@
 package com.arobs.project.tag;
 
-import com.arobs.project.dtos.EmployeeDTO;
 import com.arobs.project.dtos.TagDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,18 +22,10 @@ public class TagController {
     }
 
     @GetMapping(value = "/tags", produces = "application/json")
-    public ResponseEntity<?> handleGetAllTags() {
-        return new ResponseEntity<>(service.getAllTags(), HttpStatus.OK);
+    public ResponseEntity<?> handleFindAllTags() {
+        return new ResponseEntity<>(service.findAllTags(), HttpStatus.OK);
     }
 
-//    @GetMapping(value = "/tags/{description}")
-//    public ResponseEntity<?> handleFindByDescription(@PathVariable String description) {
-//        TagDTO foundTag = service.findTagByDescription(description);
-//        if (foundTag == null) {
-//            return new ResponseEntity<>("Sorry! There is no tag with given description!", HttpStatus.BAD_REQUEST);
-//        }
-//        return new ResponseEntity<>(foundTag, HttpStatus.OK);
-//    }
     @GetMapping(value = "/tags/description")
     public ResponseEntity<?> handleFindByDescription(@RequestParam(value = "description") String description) {
         TagDTO foundTag = service.findTagByDescription(description);

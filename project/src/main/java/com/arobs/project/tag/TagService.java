@@ -5,7 +5,7 @@ import com.arobs.project.dtos.TagDTO;
 import java.util.List;
 
 public interface TagService {
-    List<TagDTO> getAllTags();
+    List<TagDTO> findAllTags();
 
     TagDTO insertTag(TagDTO tagDTO);
 
@@ -15,5 +15,5 @@ public interface TagService {
 
     boolean deleteTag(int id);
 
-    TagDTO updateTag(TagDTO tag);
+    TagDTO updateTag(TagDTO tagDTO);
 }

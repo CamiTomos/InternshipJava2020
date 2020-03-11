@@ -3,29 +3,22 @@ package com.arobs.project.book;
 import com.arobs.project.dtos.BookDTO;
 import com.arobs.project.dtos.TagDTO;
 import com.arobs.project.mappers.ProjectModelMapper;
-import com.arobs.project.tag.Tag;
 import com.arobs.project.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service("bookService")
 @EnableTransactionManagement
 public class BookServiceImpl implements BookService {
-    //    private BookJDBCRepository bookRepository;
     private BookHibernateRepository bookRepository;
     private TagService tagService;
 
-    //    @Autowired
-//    public BookServiceImpl(BookJDBCRepository bookRepository) {
-//        this.bookRepository = bookRepository;
-//    }
     @Autowired
     public BookServiceImpl(BookHibernateRepository bookRepository, TagService tagService) {
         this.bookRepository = bookRepository;
@@ -34,13 +27,11 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public List<BookDTO> getAllBooks() {
-        List<Book> books = bookRepository.getAllBooks();
-        List<BookDTO> bookDTOS = new ArrayList<>(books.size());
-        for (Book book : books) {
-            bookDTOS.add(ProjectModelMapper.convertBookToDTO(book));
-        }
-        return bookDTOS;
+    public List<BookDTO> findAllBooks() {
+        return bookRepository.findAllBooks()
+                .stream()
+                .map(ProjectModelMapper::convertBookToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

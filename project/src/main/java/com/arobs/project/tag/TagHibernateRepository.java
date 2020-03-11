@@ -1,6 +1,5 @@
 package com.arobs.project.tag;
 
-import com.arobs.project.tag.Tag;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ public class TagHibernateRepository {
         this.sessionFactory = sessionFactory;
     }
 
-    public List<Tag> getAllTags() {
+    public List<Tag> findAllTags() {
         Session session = sessionFactory.getCurrentSession();
         return session.createQuery("from Tag").getResultList();
     }
@@ -29,13 +28,12 @@ public class TagHibernateRepository {
     }
 
     public Tag getTagByDescription(String description) {
-//        refactor this
         Session session = sessionFactory.getCurrentSession();
-        List<Tag> tags = session.createQuery("from Tag").getResultList();
-        for (Tag tag : tags) {
-            if (tag.getTagDescription().equals(description)) {
-                return tag;
-            }
+        List<Tag> tags = session.createQuery("from Tag T where T.tagDescription= :description")
+                .setParameter("description", description)
+                .getResultList();
+        if (tags.size() == 1) {
+            return tags.get(0);
         }
         return null;
     }

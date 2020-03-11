@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("copyServiceImpl")
 @EnableTransactionManagement
@@ -28,13 +28,11 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     @Transactional
-    public List<CopyDTO> getAllCopies() {
-        List<Copy> copies = hibernateRepository.getAllCopies();
-        List<CopyDTO> copyDTOS = new ArrayList<>(copies.size());
-        for (Copy copy : copies) {
-            copyDTOS.add(ProjectModelMapper.convertCopyToDTO(copy));
-        }
-        return copyDTOS;
+    public List<CopyDTO> findAllCopies() {
+        return hibernateRepository.findAllCopies()
+                .stream()
+                .map(ProjectModelMapper::convertCopyToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

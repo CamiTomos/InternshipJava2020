@@ -20,12 +20,12 @@ public class BookController {
     }
 
     @GetMapping(value = "/books", produces = "application/json")
-    public ResponseEntity<?> handleGetAllBooks() {
+    public ResponseEntity<?> handleFindAllBooks() {
         log.info("BookController: get all books...");
-        return new ResponseEntity<>(bookService.getAllBooks(), HttpStatus.OK);
+        return new ResponseEntity<>(bookService.findAllBooks(), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/books/{id}", produces = "application/json")
+    @GetMapping(value = "/books/{id}")
     public ResponseEntity<?> handleFindBookById(@PathVariable int id) {
         BookDTO foundBook = bookService.findById(id);
         if (foundBook != null) {

@@ -18,8 +18,8 @@ public class BookRequestController {
     }
 
     @GetMapping(value = "/bookRequests")
-    public ResponseEntity<?> handleGetAllBookRequests() {
-        return new ResponseEntity<>(bookRequestService.getAllBookRequests(), HttpStatus.OK);
+    public ResponseEntity<?> handleFindAllBookRequests() {
+        return new ResponseEntity<>(bookRequestService.findAllBookRequests(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/bookRequests")

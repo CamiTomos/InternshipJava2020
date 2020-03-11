@@ -6,7 +6,7 @@ import com.arobs.project.exception.ValidationException;
 import java.util.List;
 
 public interface CopyService {
-    List<CopyDTO> getAllCopies();
+    List<CopyDTO> findAllCopies();
 
     CopyDTO insertCopy(CopyDTO copyDTO) throws ValidationException;
 

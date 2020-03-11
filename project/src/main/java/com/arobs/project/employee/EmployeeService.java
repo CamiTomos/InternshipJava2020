@@ -5,7 +5,7 @@ import com.arobs.project.dtos.EmployeeDTO;
 import java.util.List;
 
 public interface EmployeeService {
-    List<EmployeeDTO> getAllEmployees();
+    List<EmployeeDTO> findAllEmployees();
 
     EmployeeDTO insertEmployee(EmployeeDTO employeeDTO);
 

@@ -34,7 +34,6 @@ public class Book implements Serializable {
     private Set<Copy> copies = new HashSet<>();
 
     @ManyToMany(cascade = {
-//            CascadeType.ALL
             CascadeType.PERSIST,
             CascadeType.MERGE
     })

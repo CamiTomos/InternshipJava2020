@@ -28,8 +28,8 @@ public class BookRequestServiceImpl implements BookRequestService {
 
     @Override
     @Transactional
-    public List<BookRequestDTO> getAllBookRequests() {
-        List<BookRequest> bookRequests = bookRequestRepository.getAllBookRequests();
+    public List<BookRequestDTO> findAllBookRequests() {
+        List<BookRequest> bookRequests = bookRequestRepository.findAllBookRequests();
         List<BookRequestDTO> bookRequestDTOS = new ArrayList<>(bookRequests.size());
         for (BookRequest bookRequest : bookRequests) {
             bookRequestDTOS.add(ProjectModelMapper.convertBookRequestToDTO(bookRequest));
