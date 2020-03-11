@@ -2,6 +2,7 @@ package com.arobs.project.dtos;
 
 import java.sql.Timestamp;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 public class BookDTO {
@@ -81,5 +82,18 @@ public class BookDTO {
                 ", bookDescription='" + bookDescription + '\'' +
 //                ", bookAddedDate=" + bookAddedDate +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BookDTO bookDTO = (BookDTO) o;
+        return id == bookDTO.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

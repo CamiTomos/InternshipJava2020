@@ -55,6 +55,13 @@ public class Book implements Serializable {
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
     }
+    public Book(int id, String bookTitle, String bookAuthor, String bookDescription, Set<Tag> tags) {
+        this.id = id;
+        this.bookTitle = bookTitle;
+        this.bookAuthor = bookAuthor;
+        this.bookDescription = bookDescription;
+        this.tags=tags;
+    }
 
     public Book(String bookTitle, String bookAuthor, String bookDescription) {
         this(1, bookTitle, bookAuthor, bookDescription);

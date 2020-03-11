@@ -1,5 +1,7 @@
 package com.arobs.project.dtos;
 
+import java.util.Objects;
+
 public class EmployeeDTO {
     private int id;
     private String employeeName;
@@ -67,5 +69,18 @@ public class EmployeeDTO {
                 ", employeePassword='" + employeePassword + '\'' +
                 ", employeeEmail='" + employeeEmail + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        EmployeeDTO that = (EmployeeDTO) o;
+        return id == that.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

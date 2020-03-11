@@ -12,7 +12,7 @@ public class EmployeeController {
     private EmployeeService service;
 
     @Autowired
-    public EmployeeController(EmployeeServiceImpl service) {
+    public EmployeeController(EmployeeService service) {
         this.service = service;
     }
 
