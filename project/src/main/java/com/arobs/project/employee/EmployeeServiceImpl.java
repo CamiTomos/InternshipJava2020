@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("employeeServiceImpl")
 @EnableTransactionManagement
@@ -23,12 +23,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     @Transactional
     public List<EmployeeDTO> findAllEmployees() {
-        List<Employee> employees = hibernateRepository.findAllEmployees();
-        List<EmployeeDTO> employeesDTO = new ArrayList<>(employees.size());
-        for (Employee employee : employees) {
-            employeesDTO.add(ProjectModelMapper.convertEmployeeToDTO(employee));
-        }
-        return employeesDTO;
+        return hibernateRepository.findAllEmployees()
+                .stream()
+                .map(ProjectModelMapper::convertEmployeeToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

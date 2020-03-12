@@ -11,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("bookRequestServiceImpl")
 @EnableTransactionManagement
@@ -29,12 +29,10 @@ public class BookRequestServiceImpl implements BookRequestService {
     @Override
     @Transactional
     public List<BookRequestDTO> findAllBookRequests() {
-        List<BookRequest> bookRequests = bookRequestRepository.findAllBookRequests();
-        List<BookRequestDTO> bookRequestDTOS = new ArrayList<>(bookRequests.size());
-        for (BookRequest bookRequest : bookRequests) {
-            bookRequestDTOS.add(ProjectModelMapper.convertBookRequestToDTO(bookRequest));
-        }
-        return bookRequestDTOS;
+        return bookRequestRepository.findAllBookRequests()
+                .stream()
+                .map(ProjectModelMapper::convertBookRequestToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

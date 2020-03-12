@@ -14,53 +14,26 @@ public class ProjectModelMapper {
     private static org.modelmapper.ModelMapper modelMapper = new org.modelmapper.ModelMapper();
 
     public static BookDTO convertBookToDTO(Book book) {
-//        return new BookDTO(book.getId(),
-//                book.getBookTitle(),
-//                book.getBookAuthor(),
-//                book.getBookDescription(),
-//                book.getBookAddedDate().toString());
-        return modelMapper.map(book, BookDTO.class); //Doesn't work
+        return modelMapper.map(book, BookDTO.class);
     }
 
     public static Book convertDTOtoBook(BookDTO bookDTO) {
-//        return new Book(bookDTO.getId(),
-//                bookDTO.getBookTitle(),
-//                bookDTO.getBookAuthor(),
-//                bookDTO.getBookDescription(),
-//                new Timestamp(myFormat.parse(bookDTO.getBookAddedDate()).getTime()));
         return modelMapper.map(bookDTO, Book.class);
     }
 
     public static EmployeeDTO convertEmployeeToDTO(Employee employee) {
-//        return new EmployeeDTO(employee.getId(),
-//                employee.getEmployeeName(),
-//                employee.getEmployeeRole(),
-//                employee.getEmployeePassword(),
-//                employee.getEmployeeEmail()
-//        );
-        return modelMapper.map(employee,EmployeeDTO.class);
+        return modelMapper.map(employee, EmployeeDTO.class);
     }
 
     public static Employee convertDTOtoEmployee(EmployeeDTO employeeDTO) {
-//        return new Employee(employeeDTO.getId(),
-//                employeeDTO.getEmployeeName(),
-//                employeeDTO.getEmployeeRole(),
-//                employeeDTO.getEmployeePassword(),
-//                employeeDTO.getEmployeeEmail());
-        return modelMapper.map(employeeDTO,Employee.class);
+        return modelMapper.map(employeeDTO, Employee.class);
     }
 
     public static TagDTO convertTagToDTO(Tag tag) {
-//        return new TagDTO(tag.getId(),
-//                tag.getTagDescription()
-//        );
         return modelMapper.map(tag, TagDTO.class);
     }
 
     public static Tag convertDTOtoTag(TagDTO tagDTO) {
-//        return new Tag(tagDTO.getId(),
-//                tagDTO.getTagDescription()
-//        );
         return modelMapper.map(tagDTO, Tag.class);
     }
 

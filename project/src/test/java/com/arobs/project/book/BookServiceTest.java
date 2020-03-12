@@ -39,11 +39,14 @@ public class BookServiceTest {
         BookDTO bookDTO = new BookDTO(1, "a", "a", "a", tagDTOS);
 
         Set<Tag> tagsIn = new HashSet<>(10);
-        tagsIn.add(new Tag(0, "keep working"));
+        Tag tagIn=new Tag(0, "keep working");
+        tagsIn.add(tagIn);
         Set<Tag> tagsOut = new HashSet<>(10);
-        tagsOut.add(new Tag(1, "keep working"));
+        Tag tagOut=new Tag(1, "keep working");
+        tagsOut.add(tagOut);
         Book bookIn = new Book(0, "a", "a", "a",tagsIn);
         Book bookOut = new Book(1, "a", "a", "a",tagsOut);
+        when(tagService.insertTag(ProjectModelMapper.convertTagToDTO(tagIn))).thenReturn(ProjectModelMapper.convertTagToDTO(tagOut));
         when(bookHibernateRepository.insertBook(bookIn)).thenReturn(bookOut);
         BookDTO insertedBook = bookService.insertBook(ProjectModelMapper.convertBookToDTO(bookOut));
         assertEquals(insertedBook,bookDTO);
