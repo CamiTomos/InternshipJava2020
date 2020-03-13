@@ -1,21 +1,19 @@
 package com.arobs.project.book;
 
 import com.arobs.project.dtos.BookDTO;
-import com.arobs.project.dtos.TagDTO;
 import com.arobs.project.mappers.ProjectModelMapper;
-import com.arobs.project.tag.Tag;
 import com.arobs.project.tag.TagService;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -27,28 +25,43 @@ public class BookServiceTest {
     @Mock
     TagService tagService;
 
-    @BeforeAll
-    static void setup() {
+    @BeforeEach
+    void setup() {
+        MockitoAnnotations.initMocks(this);
     }
 
     @Test
     void whenInsertBook_givenBookDTO_returnBookDTO() {
-        //does not work!!!
-        Set<TagDTO> tagDTOS = new HashSet<>(10);
-        tagDTOS.add(new TagDTO(1, "keep working"));
-        BookDTO bookDTO = new BookDTO(1, "a", "a", "a", tagDTOS);
+        Book bookToInsert = new Book(0, "title", "author", "description");
+        Book insertedBook = bookToInsert;
+        insertedBook.setId(1);
+        when(bookHibernateRepository.insertBook(any(Book.class))).thenReturn(insertedBook);
+        BookDTO book = bookService.insertBook(ProjectModelMapper.convertBookToDTO(bookToInsert));
+        assertEquals(book, ProjectModelMapper.convertBookToDTO(insertedBook));
+    }
 
-        Set<Tag> tagsIn = new HashSet<>(10);
-        Tag tagIn=new Tag(0, "keep working");
-        tagsIn.add(tagIn);
-        Set<Tag> tagsOut = new HashSet<>(10);
-        Tag tagOut=new Tag(1, "keep working");
-        tagsOut.add(tagOut);
-        Book bookIn = new Book(0, "a", "a", "a",tagsIn);
-        Book bookOut = new Book(1, "a", "a", "a",tagsOut);
-        when(tagService.insertTag(ProjectModelMapper.convertTagToDTO(tagIn))).thenReturn(ProjectModelMapper.convertTagToDTO(tagOut));
-        when(bookHibernateRepository.insertBook(bookIn)).thenReturn(bookOut);
-        BookDTO insertedBook = bookService.insertBook(ProjectModelMapper.convertBookToDTO(bookOut));
-        assertEquals(insertedBook,bookDTO);
+    @Test
+    void whenDeleteBook_givenId_returnBoolean() {
+        when(bookHibernateRepository.deleteBook(any(Book.class))).thenReturn(true);
+        Boolean isDeleted = bookService.deleteBook(10);
+        assertEquals(true, isDeleted);
+    }
+
+    @Test
+    void whenUpdateBook_givenBookDTO_returnBookDTO(){
+        Book bookToUpdate = new Book(1, "title", "author", "description");
+        Book updatedBook = bookToUpdate;
+        when(bookHibernateRepository.findBookById(bookToUpdate.getId())).thenReturn(updatedBook);
+        when(bookHibernateRepository.updateBook(any(Book.class))).thenReturn(updatedBook);
+        BookDTO book=bookService.updateBook(ProjectModelMapper.convertBookToDTO(bookToUpdate));
+        assertEquals(ProjectModelMapper.convertBookToDTO(updatedBook),book);
+    }
+
+    @Test
+    void whenFindById_givenId_returnBookDTO(){
+        Book foundBook = new Book(1, "title", "author", "description");
+        when(bookHibernateRepository.findBookById(foundBook.getId())).thenReturn(foundBook);
+        BookDTO book=bookService.findById(foundBook.getId());
+        assertEquals(ProjectModelMapper.convertBookToDTO(foundBook),book);
     }
 }
