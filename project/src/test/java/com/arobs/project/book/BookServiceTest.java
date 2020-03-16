@@ -12,8 +12,7 @@ import org.mockito.MockitoAnnotations;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -48,20 +47,20 @@ public class BookServiceTest {
     }
 
     @Test
-    void whenUpdateBook_givenBookDTO_returnBookDTO(){
+    void whenUpdateBook_givenBookDTO_returnBookDTO() {
         Book bookToUpdate = new Book(1, "title", "author", "description");
         Book updatedBook = bookToUpdate;
         when(bookHibernateRepository.findBookById(bookToUpdate.getId())).thenReturn(updatedBook);
         when(bookHibernateRepository.updateBook(any(Book.class))).thenReturn(updatedBook);
-        BookDTO book=bookService.updateBook(ProjectModelMapper.convertBookToDTO(bookToUpdate));
-        assertEquals(ProjectModelMapper.convertBookToDTO(updatedBook),book);
+        BookDTO book = bookService.updateBook(ProjectModelMapper.convertBookToDTO(bookToUpdate));
+        assertEquals(ProjectModelMapper.convertBookToDTO(updatedBook), book);
     }
 
     @Test
-    void whenFindById_givenId_returnBookDTO(){
+    void whenFindById_givenId_returnBookDTO() {
         Book foundBook = new Book(1, "title", "author", "description");
         when(bookHibernateRepository.findBookById(foundBook.getId())).thenReturn(foundBook);
-        BookDTO book=bookService.findById(foundBook.getId());
-        assertEquals(ProjectModelMapper.convertBookToDTO(foundBook),book);
+        BookDTO book = bookService.findById(foundBook.getId());
+        assertEquals(ProjectModelMapper.convertBookToDTO(foundBook), book);
     }
 }
