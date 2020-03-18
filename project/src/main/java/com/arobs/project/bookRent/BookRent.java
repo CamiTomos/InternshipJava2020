@@ -1,5 +1,6 @@
 package com.arobs.project.bookRent;
 
+import com.arobs.project.book.Book;
 import com.arobs.project.copy.Copy;
 import com.arobs.project.employee.Employee;
 
@@ -28,15 +29,37 @@ public class BookRent implements Serializable {
     @Column(name = "bookrentNote")
     private Double bookrentNote;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employeeID")
     private Employee employee;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "copyID")
     private Copy copy;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bookID")
+    private Book book;
+
     public BookRent() {
+    }
+
+    public BookRent(int id, Timestamp bookrentRentalDate, Timestamp bookrentReturnDate, String bookrentStatus, Double bookrentNote, Employee employee, Copy copy) {
+        this.id = id;
+        this.bookrentRentalDate = bookrentRentalDate;
+        this.bookrentReturnDate = bookrentReturnDate;
+        this.bookrentStatus = bookrentStatus;
+        this.bookrentNote = bookrentNote;
+        this.employee = employee;
+        this.copy = copy;
+    }
+
+    public BookRent(int id, Timestamp bookrentRentalDate, Timestamp bookrentReturnDate, String bookrentStatus, Double bookrentNote) {
+        this.id = id;
+        this.bookrentRentalDate = bookrentRentalDate;
+        this.bookrentReturnDate = bookrentReturnDate;
+        this.bookrentStatus = bookrentStatus;
+        this.bookrentNote = bookrentNote;
     }
 
     public int getId() {
@@ -93,6 +116,14 @@ public class BookRent implements Serializable {
 
     public void setCopy(Copy copy) {
         this.copy = copy;
+    }
+
+    public Book getBook() {
+        return book;
+    }
+
+    public void setBook(Book book) {
+        this.book = book;
     }
 
     @Override

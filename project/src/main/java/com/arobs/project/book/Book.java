@@ -1,5 +1,6 @@
 package com.arobs.project.book;
 
+import com.arobs.project.bookRent.BookRent;
 import com.arobs.project.copy.Copy;
 import com.arobs.project.rentRequest.RentRequest;
 import com.arobs.project.tag.Tag;
@@ -46,6 +47,9 @@ public class Book implements Serializable {
     @OneToMany(mappedBy = "book")
     Set<RentRequest> rentRequests = new HashSet<>();
 
+    @OneToMany(mappedBy = "book")
+    Set<BookRent> bookRents = new HashSet<>();
+
     public Book() {
     }
 
@@ -55,12 +59,13 @@ public class Book implements Serializable {
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
     }
+
     public Book(int id, String bookTitle, String bookAuthor, String bookDescription, Set<Tag> tags) {
         this.id = id;
         this.bookTitle = bookTitle;
         this.bookAuthor = bookAuthor;
         this.bookDescription = bookDescription;
-        this.tags=tags;
+        this.tags = tags;
     }
 
     public Book(String bookTitle, String bookAuthor, String bookDescription) {
@@ -129,6 +134,14 @@ public class Book implements Serializable {
 
     public void setRentRequests(Set<RentRequest> rentRequests) {
         this.rentRequests = rentRequests;
+    }
+
+    public Set<BookRent> getBookRents() {
+        return bookRents;
+    }
+
+    public void setBookRents(Set<BookRent> bookRents) {
+        this.bookRents = bookRents;
     }
 
     @Override

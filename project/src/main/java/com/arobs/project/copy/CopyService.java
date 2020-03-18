@@ -15,4 +15,6 @@ public interface CopyService {
     CopyDTO updateCopy(CopyDTO copyDTO);
 
     CopyDTO findCopyById(int id);
+
+    List<CopyDTO> findCopiesForBook(int bookId);
 }

@@ -88,6 +88,12 @@ create table bookrents(
 alter table bookrents
 drop column bookID;
 
+alter table bookrents
+add bookID int not null;
+
+ALTER TABLE bookrents
+ADD FOREIGN KEY (bookID) REFERENCES books(id) on delete cascade on update cascade;
+
 select * from bookrents;
 
 create table rentrequests(

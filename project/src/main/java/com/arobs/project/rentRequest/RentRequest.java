@@ -22,11 +22,11 @@ public class RentRequest implements Serializable {
     @Column(name = "rentrequestStatus")
     private String rentrequestStatus;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employeeID")
     private Employee employee;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookID")
     private Book book;
 

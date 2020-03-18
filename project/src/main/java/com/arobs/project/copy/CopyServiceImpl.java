@@ -85,4 +85,13 @@ public class CopyServiceImpl implements CopyService {
     public CopyDTO findCopyById(int id) {
         return ProjectModelMapper.convertCopyToDTO(hibernateRepository.findCopyById(id));
     }
+
+    @Override
+    @Transactional
+    public List<CopyDTO> findCopiesForBook(int bookId) {
+        return hibernateRepository.findCopiesForBook(bookId)
+                .stream()
+                .map(ProjectModelMapper::convertCopyToDTO)
+                .collect(Collectors.toList());
+    }
 }

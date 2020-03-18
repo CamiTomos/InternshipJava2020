@@ -1,12 +1,16 @@
 package com.arobs.project.mappers;
 
 import com.arobs.project.book.Book;
+import com.arobs.project.bookRent.BookRent;
 import com.arobs.project.bookRequest.BookRequest;
 import com.arobs.project.copy.Copy;
 import com.arobs.project.dtos.*;
 import com.arobs.project.employee.Employee;
 import com.arobs.project.tag.Tag;
 
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 public class ProjectModelMapper {
@@ -51,5 +55,26 @@ public class ProjectModelMapper {
 
     public static BookRequest convertDTOtoBookRequest(BookRequestDTO bookRequestDTO) {
         return modelMapper.map(bookRequestDTO, BookRequest.class);
+    }
+
+    public static BookRent convertDTOtoBookRent(BookRentDTO bookRentDTO) throws ParseException {
+        return new BookRent(bookRentDTO.getId(),
+                new Timestamp(myFormat.parse(bookRentDTO.getBookrentRentalDate()).getTime()),
+                new Timestamp(myFormat.parse(bookRentDTO.getBookrentReturnDate()).getTime()),
+                bookRentDTO.getBookrentStatus(),
+                bookRentDTO.getBookrentNote()
+//                bookRentDTO.getEmployee(),
+//                bookRentDTO.getCopy()
+                );
+    }
+    public static BookRentDTO convertBookRentToDTO(BookRent bookRent){
+        return new BookRentDTO(bookRent.getId(),
+                bookRent.getBookrentRentalDate().toString(),
+                bookRent.getBookrentReturnDate().toString(),
+                bookRent.getBookrentStatus(),
+                bookRent.getBookrentNote()
+//                bookRent.getEmployee(),
+//                bookRent.getCopy()
+        );
     }
 }
