@@ -41,4 +41,16 @@ public class BookRentController {
         }
     }
 
+    @PutMapping(value = "/bookRents/return/{id}/{grade}")
+    public ResponseEntity<?> handleReturnBook(@PathVariable int id, @PathVariable double grade) {
+        if (grade < 1 || grade > 5) {
+            return new ResponseEntity<>("Grade must be between 1 and 5!", HttpStatus.NOT_ACCEPTABLE);
+        }
+        try {
+            bookRentService.returnBook(id, grade);
+            return new ResponseEntity<>("Book returned successfully!", HttpStatus.OK);
+        } catch (ValidationException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+    }
 }

@@ -8,6 +8,7 @@ import com.arobs.project.dtos.BookRentDTO;
 import com.arobs.project.dtos.CopyDTO;
 import com.arobs.project.employee.Employee;
 import com.arobs.project.employee.EmployeeService;
+import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,7 +50,7 @@ public class BookRentServiceImpl implements BookRentService {
         Copy foundCopy = ProjectModelMapper.convertDTOtoCopy(foundAvailableCopies.get(0));
         Timestamp rentalDate = new Timestamp(System.currentTimeMillis());
         Timestamp returnDate = this.createTimestampReturnDate(rentalDate);
-        BookRent bookRentToInsert = new BookRent(0, rentalDate, returnDate, "on_going", 0.0, foundEmployee, foundCopy, foundBook);
+        BookRent bookRentToInsert = new BookRent(0, rentalDate, returnDate, BookRentStatus.ON_GOING.toString().toLowerCase(), 0.0, foundEmployee, foundCopy, foundBook);
         return ProjectModelMapper.convertBookRentToDTO(bookRentRepository.insertBookRent(bookRentToInsert));
     }
 
@@ -66,7 +68,7 @@ public class BookRentServiceImpl implements BookRentService {
         if (null == foundBookRent) {
             throw new ValidationException("Book rent not found!");
         }
-        if (foundBookRent.getBookrentStatus().compareTo("on_going") != 0) {
+        if (foundBookRent.getBookrentStatus().compareTo(BookRentStatus.ON_GOING.toString().toLowerCase()) != 0) {
             throw new ValidationException("You can not extend rental date! Book does not have on_going status!");
         }
         Timestamp rentalDate = foundBookRent.getBookrentRentalDate();
@@ -81,6 +83,19 @@ public class BookRentServiceImpl implements BookRentService {
             throw new ValidationException("You can not extend rental date! Rental becomes more than 3 months total time!");
         }
         foundBookRent.setBookrentReturnDate(new Timestamp(returnCalendar.getTime().getTime()));
+        bookRentRepository.updateBookRent(foundBookRent);
+    }
+
+    @Override
+    @Transactional
+    public void returnBook(int id, double grade) throws ValidationException {
+        BookRent foundBookRent = bookRentRepository.getBookRentById(id);
+        if (null == foundBookRent) {
+            throw new ValidationException("Book rent not found!");
+        }
+        foundBookRent.setBookrentReturnDate(new Timestamp(System.currentTimeMillis()));
+        foundBookRent.setBookrentNote(grade);
+        foundBookRent.setBookrentStatus(BookRentStatus.RETURNED.toString().toLowerCase());
         bookRentRepository.updateBookRent(foundBookRent);
     }
 }

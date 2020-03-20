@@ -9,4 +9,6 @@ public interface BookRentService {
     BookRentDTO insertBookRent(BookRentDTO bookRentDTO) throws ParseException, ValidationException;
 
     void extendDeadlineBookRent(int id) throws ValidationException;
+
+    void returnBook(int id, double grade) throws ValidationException;
 }
