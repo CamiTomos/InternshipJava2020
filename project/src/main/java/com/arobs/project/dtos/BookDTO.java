@@ -1,6 +1,5 @@
 package com.arobs.project.dtos;
 
-import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -10,8 +9,8 @@ public class BookDTO {
     private String bookTitle;
     private String bookAuthor;
     private String bookDescription;
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-    private Set<TagDTO> tags=new HashSet<>();
+    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    private Set<TagDTO> tags = new HashSet<>();
 
     public BookDTO() {
     }

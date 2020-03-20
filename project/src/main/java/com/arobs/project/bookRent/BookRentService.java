@@ -7,4 +7,6 @@ import java.text.ParseException;
 
 public interface BookRentService {
     BookRentDTO insertBookRent(BookRentDTO bookRentDTO) throws ParseException, ValidationException;
+
+    void extendDeadlineBookRent(int id) throws ValidationException;
 }

@@ -30,9 +30,6 @@ public class BookRentHibernateRepository {
     public BookRent updateBookRent(BookRent bookRent) {
         Session session = sessionFactory.getCurrentSession();
         BookRent foundBookRent = session.get(BookRent.class, bookRent.getId());
-        foundBookRent.setBookrentNote(bookRent.getBookrentNote());
-        foundBookRent.setBookrentStatus(bookRent.getBookrentStatus());
-        foundBookRent.setBookrentRentalDate(bookRent.getBookrentRentalDate());
         foundBookRent.setBookrentReturnDate(bookRent.getBookrentReturnDate());
         return foundBookRent;
     }

@@ -24,11 +24,11 @@ public class CopyController {
 
     @GetMapping(value = "/copies/{id}")
     public ResponseEntity<?> handleFindCopyById(@PathVariable int id) {
-        CopyDTO foundCopy = copyService.findCopyById(id);
-        if (foundCopy != null) {
-            return new ResponseEntity<>(foundCopy, HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(copyService.findCopyById(id), HttpStatus.OK);
+        } catch (ValidationException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("The copy with the given id does not exist!", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/copies")
@@ -42,17 +42,17 @@ public class CopyController {
 
     @PutMapping(value = "/copies")
     public ResponseEntity<?> handleUpdateCopy(@RequestBody CopyDTO copyDTO) {
-        CopyDTO updatedCopy = copyService.updateCopy(copyDTO);
-        if (updatedCopy != null) {
-            return new ResponseEntity<>(updatedCopy, HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(copyService.updateCopy(copyDTO), HttpStatus.OK);
+        } catch (ValidationException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        return new ResponseEntity<>("The copy could not be updated!", HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/copies/{id}")
     public ResponseEntity<?> handleDeleteCopy(@PathVariable int id) {
         boolean isCopyDeleted = copyService.deleteCopy(id);
-        if (isCopyDeleted == true) {
+        if (isCopyDeleted) {
             return new ResponseEntity<>("Copy deleted successfully!", HttpStatus.OK);
         }
         return new ResponseEntity<>("Copy was not deleted!", HttpStatus.BAD_REQUEST);

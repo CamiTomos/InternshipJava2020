@@ -1,6 +1,7 @@
 package com.arobs.project.employee;
 
 import com.arobs.project.dtos.EmployeeDTO;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,10 +59,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeDTO findEmployeeByID(int id) {
+    public EmployeeDTO findEmployeeByID(int id) throws ValidationException {
         Employee foundEmployee = hibernateRepository.findById(id);
         if (foundEmployee == null) {
-            return null;
+            throw new ValidationException("The employee with given id does not exist!");
         }
         return ProjectModelMapper.convertEmployeeToDTO(foundEmployee);
     }

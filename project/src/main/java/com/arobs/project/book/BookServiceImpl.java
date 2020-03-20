@@ -2,6 +2,7 @@ package com.arobs.project.book;
 
 import com.arobs.project.dtos.BookDTO;
 import com.arobs.project.dtos.TagDTO;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.mappers.ProjectModelMapper;
 import com.arobs.project.tag.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -85,12 +86,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookDTO findById(int id) {
+    public BookDTO findById(int id) throws ValidationException {
         Book foundBook = bookRepository.findBookById(id);
-        if (foundBook != null) {
-            return ProjectModelMapper.convertBookToDTO(foundBook);
+        if (foundBook == null) {
+            throw new ValidationException("Book with given id does not exist!");
         }
-        return null;
+        return ProjectModelMapper.convertBookToDTO(foundBook);
     }
 
 }

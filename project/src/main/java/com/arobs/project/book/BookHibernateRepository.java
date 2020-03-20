@@ -1,6 +1,5 @@
 package com.arobs.project.book;
 
-import com.arobs.project.tag.TagService;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,7 @@ public class BookHibernateRepository {
 
     public Book updateBook(Book book) {
         Session session = sessionFactory.getCurrentSession();
-        Book foundBook=session.get(Book.class,book.getId());
+        Book foundBook = session.get(Book.class, book.getId());
         foundBook.setBookTitle(book.getBookTitle());
         foundBook.setBookAuthor(book.getBookAuthor());
         foundBook.setBookDescription(book.getBookDescription());

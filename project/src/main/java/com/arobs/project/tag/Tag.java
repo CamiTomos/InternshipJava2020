@@ -26,8 +26,8 @@ public class Tag implements Serializable {
     }
 
     public Tag(int id, String tagDescription) {
-        this.id=id;
-        this.tagDescription=tagDescription;
+        this.id = id;
+        this.tagDescription = tagDescription;
     }
 
     public int getId() {

@@ -1,6 +1,7 @@
 package com.arobs.project.book;
 
 import com.arobs.project.dtos.BookDTO;
+import com.arobs.project.exception.ValidationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,11 +28,11 @@ public class BookController {
 
     @GetMapping(value = "/books/{id}")
     public ResponseEntity<?> handleFindBookById(@PathVariable int id) {
-        BookDTO foundBook = bookService.findById(id);
-        if (foundBook != null) {
-            return new ResponseEntity<>(foundBook, HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(bookService.findById(id), HttpStatus.OK);
+        } catch (ValidationException ex) {
+            return new ResponseEntity<>("Book with given id does not exist!", HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("Book with given id does not exist!", HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping(value = "/books", produces = "application/json")

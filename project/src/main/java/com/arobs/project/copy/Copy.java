@@ -23,7 +23,7 @@ public class Copy implements Serializable {
     @Column(name = "copyStatus")
     private String copyStatus;
 
-    @ManyToOne(fetch= FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bookID")
     private Book book;
 

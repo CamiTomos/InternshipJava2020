@@ -1,6 +1,7 @@
 package com.arobs.project.book;
 
 import com.arobs.project.dtos.BookDTO;
+import com.arobs.project.exception.ValidationException;
 import com.arobs.project.mappers.ProjectModelMapper;
 import com.arobs.project.tag.TagService;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,7 +58,7 @@ public class BookServiceTest {
     }
 
     @Test
-    void whenFindById_givenId_returnBookDTO() {
+    void whenFindById_givenId_returnBookDTO() throws ValidationException {
         Book foundBook = new Book(1, "title", "author", "description");
         when(bookHibernateRepository.findBookById(foundBook.getId())).thenReturn(foundBook);
         BookDTO book = bookService.findById(foundBook.getId());

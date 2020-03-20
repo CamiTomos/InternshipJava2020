@@ -44,7 +44,7 @@ public class BookRent implements Serializable {
     public BookRent() {
     }
 
-    public BookRent(int id, Timestamp bookrentRentalDate, Timestamp bookrentReturnDate, String bookrentStatus, Double bookrentNote, Employee employee, Copy copy) {
+    public BookRent(int id, Timestamp bookrentRentalDate, Timestamp bookrentReturnDate, String bookrentStatus, Double bookrentNote, Employee employee, Copy copy, Book book) {
         this.id = id;
         this.bookrentRentalDate = bookrentRentalDate;
         this.bookrentReturnDate = bookrentReturnDate;
@@ -52,6 +52,7 @@ public class BookRent implements Serializable {
         this.bookrentNote = bookrentNote;
         this.employee = employee;
         this.copy = copy;
+        this.book = book;
     }
 
     public BookRent(int id, Timestamp bookrentRentalDate, Timestamp bookrentReturnDate, String bookrentStatus, Double bookrentNote) {
@@ -147,8 +148,8 @@ public class BookRent implements Serializable {
                 ", bookrentReturnDate=" + bookrentReturnDate +
                 ", bookrentStatus='" + bookrentStatus + '\'' +
                 ", bookrentNote=" + bookrentNote +
-                ", employee=" + employee +
-                ", copy=" + copy +
+//                ", employee=" + employee +
+//                ", copy=" + copy +
                 '}';
     }
 }

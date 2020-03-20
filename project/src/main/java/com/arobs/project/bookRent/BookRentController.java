@@ -6,10 +6,7 @@ import com.arobs.project.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
 
@@ -31,6 +28,16 @@ public class BookRentController {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ParseException e) {
             return new ResponseEntity<>("Date does not respect the format!", HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    @PutMapping(value = "/bookRents/extend/{id}")
+    public ResponseEntity<?> handleExtendDeadline(@PathVariable int id) {
+        try {
+            bookRentService.extendDeadlineBookRent(id);
+            return new ResponseEntity<>("Return date extended successfully!", HttpStatus.OK);
+        } catch (ValidationException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
 

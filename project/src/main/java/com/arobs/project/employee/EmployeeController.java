@@ -1,6 +1,7 @@
 package com.arobs.project.employee;
 
 import com.arobs.project.dtos.EmployeeDTO;
+import com.arobs.project.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,10 +47,10 @@ public class EmployeeController {
 
     @GetMapping(value = "/employees/{id}")
     public ResponseEntity<?> handleFindEmployeeById(@PathVariable int id) {
-        EmployeeDTO foundEmployee = service.findEmployeeByID(id);
-        if (null == foundEmployee) {
-            return new ResponseEntity<>("The given employee does not exist!", HttpStatus.NOT_FOUND);
+        try {
+            return new ResponseEntity<>(service.findEmployeeByID(id), HttpStatus.OK);
+        } catch (ValidationException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(foundEmployee, HttpStatus.OK);
     }
 }

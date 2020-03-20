@@ -1,8 +1,8 @@
 package com.arobs.project.book;
 
 import com.arobs.project.dtos.BookDTO;
+import com.arobs.project.exception.ValidationException;
 
-import java.text.ParseException;
 import java.util.List;
 
 public interface BookService {
@@ -15,5 +15,5 @@ public interface BookService {
 
     BookDTO updateBook(BookDTO bookDTO);
 
-    BookDTO findById(int id);
+    BookDTO findById(int id) throws ValidationException;
 }

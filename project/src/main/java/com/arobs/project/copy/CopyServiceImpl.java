@@ -63,32 +63,35 @@ public class CopyServiceImpl implements CopyService {
 
     @Override
     @Transactional
-    public CopyDTO updateCopy(CopyDTO copyDTO) {
+    public CopyDTO updateCopy(CopyDTO copyDTO) throws ValidationException {
         String copyStatus = copyDTO.getCopyStatus().toUpperCase();
         if (copyStatus.compareTo(String.valueOf(CopyStatus.AVAILABLE)) != 0 &&
                 copyStatus.compareTo(String.valueOf(CopyStatus.PENDING)) != 0 &&
                 copyStatus.compareTo(String.valueOf(CopyStatus.RENTED)) != 0) {
-            return null;
+            throw new ValidationException("Status must be available, pendind or rented!");
         }
-        Copy foundCopy = hibernateRepository.findCopyById(copyDTO.getId());
-        if (foundCopy == null) {
-            return null;
+        if (hibernateRepository.findCopyById(copyDTO.getId()) == null) {
+            throw new ValidationException("Copy with given id does not exist!");
         }
         if (bookService.findById(copyDTO.getBookId()) == null) {
-            return null;
+            throw new ValidationException("Book with given id does not exist!");
         }
         return ProjectModelMapper.convertCopyToDTO(hibernateRepository.updateCopy(ProjectModelMapper.convertDTOtoCopy(copyDTO)));
     }
 
     @Override
     @Transactional
-    public CopyDTO findCopyById(int id) {
-        return ProjectModelMapper.convertCopyToDTO(hibernateRepository.findCopyById(id));
+    public CopyDTO findCopyById(int id) throws ValidationException {
+        Copy foundCopy = hibernateRepository.findCopyById(id);
+        if (foundCopy == null) {
+            throw new ValidationException("Copy with given id does not exist!");
+        }
+        return ProjectModelMapper.convertCopyToDTO(foundCopy);
     }
 
     @Override
     @Transactional
-    public List<CopyDTO> findCopiesForBook(int bookId) {
+    public List<CopyDTO> findAvailableCopiesForBook(int bookId) {
         return hibernateRepository.findCopiesForBook(bookId)
                 .stream()
                 .map(ProjectModelMapper::convertCopyToDTO)

@@ -12,9 +12,9 @@ public interface CopyService {
 
     boolean deleteCopy(int id);
 
-    CopyDTO updateCopy(CopyDTO copyDTO);
+    CopyDTO updateCopy(CopyDTO copyDTO) throws ValidationException;
 
-    CopyDTO findCopyById(int id);
+    CopyDTO findCopyById(int id) throws ValidationException;
 
-    List<CopyDTO> findCopiesForBook(int bookId);
+    List<CopyDTO> findAvailableCopiesForBook(int bookId);
 }
