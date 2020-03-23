@@ -3,6 +3,7 @@ package com.arobs.project.bookRent;
 
 import com.arobs.project.dtos.BookRentDTO;
 import com.arobs.project.exception.ValidationException;
+import com.arobs.project.managers.RentManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,16 +15,18 @@ import java.text.ParseException;
 @RequestMapping("/library-app")
 public class BookRentController {
     private BookRentService bookRentService;
+    private RentManager rentManager;
 
     @Autowired
-    public BookRentController(BookRentService bookRentService) {
+    public BookRentController(BookRentService bookRentService, RentManager rentManager) {
         this.bookRentService = bookRentService;
+        this.rentManager = rentManager;
     }
 
     @PostMapping(value = "/bookRents")
-    public ResponseEntity<?> handleInsertCopy(@RequestBody BookRentDTO bookRentDTO) {
+    public ResponseEntity<?> handleInsertBookRent(@RequestBody BookRentDTO bookRentDTO) {
         try {
-            return new ResponseEntity<>(bookRentService.insertBookRent(bookRentDTO), HttpStatus.OK);
+            return new ResponseEntity<>(rentManager.insertBookRent(bookRentDTO), HttpStatus.OK);
         } catch (ValidationException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ParseException e) {

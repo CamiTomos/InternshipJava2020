@@ -49,7 +49,7 @@ public class CopyHibernateRepository {
 
     public List<Copy> findCopiesForBook(int bookId) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("select c from Copy c inner join c.book where c.book.id= :id and c.copyStatus='available'")
+        return session.createQuery("select c from Copy c inner join c.book where c.book.id= :id and c.copyStatus='available' and c.copyFlag=false")
                 .setParameter("id", bookId)
                 .getResultList();
     }

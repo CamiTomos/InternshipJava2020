@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Service("rentRequestServiceImpl")
 @EnableTransactionManagement
@@ -61,6 +62,13 @@ public class RentRequestServiceImpl implements RentRequestService {
         }
         foundRentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
         rentRequestRepository.updateRentRequest(foundRentRequest);
+    }
+
+    @Override
+    @Transactional
+    public boolean findRequestByBook(int bookId) {
+        List<RentRequest> foundRentRequests = rentRequestRepository.findRentRequestForBook(bookId);
+        return foundRentRequests.size() != 0;
     }
 
 

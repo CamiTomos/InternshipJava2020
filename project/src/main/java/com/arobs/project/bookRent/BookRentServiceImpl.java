@@ -1,14 +1,10 @@
 package com.arobs.project.bookRent;
 
-import com.arobs.project.book.Book;
-import com.arobs.project.book.BookService;
 import com.arobs.project.copy.Copy;
 import com.arobs.project.copy.CopyService;
 import com.arobs.project.dtos.BookRentDTO;
-import com.arobs.project.dtos.CopyDTO;
-import com.arobs.project.employee.Employee;
-import com.arobs.project.employee.EmployeeService;
 import com.arobs.project.enums.BookRentStatus;
+import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,47 +14,26 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
-import java.util.List;
 
 @Service("bookRentServiceImpl")
 @EnableTransactionManagement
 public class BookRentServiceImpl implements BookRentService {
     //    private static SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private BookRentHibernateRepository bookRentRepository;
-    private BookService bookService;
     private CopyService copyService;
-    private EmployeeService employeeService;
 
     @Autowired
-    public BookRentServiceImpl(BookRentHibernateRepository bookRentRepository, BookService bookService, CopyService copyService, EmployeeService employeeService) {
+    public BookRentServiceImpl(BookRentHibernateRepository bookRentRepository, CopyService copyService) {
         this.bookRentRepository = bookRentRepository;
-        this.bookService = bookService;
         this.copyService = copyService;
-        this.employeeService = employeeService;
     }
 
     @Override
     @Transactional
-    public BookRentDTO insertBookRent(BookRentDTO bookRentDTO) throws ValidationException {
-        Book foundBook = ProjectModelMapper.convertDTOtoBook(bookService.findById(bookRentDTO.getBookId()));
-        Employee foundEmployee = ProjectModelMapper.convertDTOtoEmployee(employeeService.findEmployeeByID(bookRentDTO.getEmployeeId()));
-        List<CopyDTO> foundAvailableCopies = copyService.findAvailableCopiesForBook(foundBook.getId());
-        if (foundAvailableCopies.isEmpty()) {
-            throw new ValidationException("No available copy for this book found!");
-        }
-        Copy foundCopy = ProjectModelMapper.convertDTOtoCopy(foundAvailableCopies.get(0));
-        Timestamp rentalDate = new Timestamp(System.currentTimeMillis());
-        Timestamp returnDate = this.createTimestampReturnDate(rentalDate);
-        BookRent bookRentToInsert = new BookRent(0, rentalDate, returnDate, BookRentStatus.ON_GOING.toString().toLowerCase(), 0.0, foundEmployee, foundCopy, foundBook);
-        return ProjectModelMapper.convertBookRentToDTO(bookRentRepository.insertBookRent(bookRentToInsert));
+    public BookRentDTO insertBookRent(BookRent bookRent) {
+        return ProjectModelMapper.convertBookRentToDTO(bookRentRepository.insertBookRent(bookRent));
     }
 
-    private Timestamp createTimestampReturnDate(Timestamp timestamp) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(timestamp);
-        calendar.add(Calendar.DAY_OF_WEEK, 30);
-        return new Timestamp(calendar.getTime().getTime());
-    }
 
     @Override
     @Transactional
@@ -95,6 +70,9 @@ public class BookRentServiceImpl implements BookRentService {
         foundBookRent.setBookrentReturnDate(new Timestamp(System.currentTimeMillis()));
         foundBookRent.setBookrentNote(grade);
         foundBookRent.setBookrentStatus(BookRentStatus.RETURNED.toString().toLowerCase());
+        Copy foundCopy = foundBookRent.getCopy();
+        foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+        copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy));
         bookRentRepository.updateBookRent(foundBookRent);
     }
 }

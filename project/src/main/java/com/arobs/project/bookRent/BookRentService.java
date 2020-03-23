@@ -6,7 +6,7 @@ import com.arobs.project.exception.ValidationException;
 import java.text.ParseException;
 
 public interface BookRentService {
-    BookRentDTO insertBookRent(BookRentDTO bookRentDTO) throws ParseException, ValidationException;
+    BookRentDTO insertBookRent(BookRent bookRent) throws ParseException, ValidationException;
 
     void extendDeadlineBookRent(int id) throws ValidationException;
 

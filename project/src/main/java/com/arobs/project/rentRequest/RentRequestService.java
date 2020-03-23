@@ -9,4 +9,6 @@ public interface RentRequestService {
     void acceptRentRequest(int id) throws ValidationException;
 
     void declineRentRequest(int id) throws ValidationException;
+
+    boolean findRequestByBook(int bookId);
 }

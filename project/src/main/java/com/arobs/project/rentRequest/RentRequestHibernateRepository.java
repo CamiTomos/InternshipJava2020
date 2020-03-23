@@ -2,8 +2,11 @@ package com.arobs.project.rentRequest;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository("rentRequestHibernateRepository")
 public class RentRequestHibernateRepository {
@@ -29,5 +32,14 @@ public class RentRequestHibernateRepository {
         Session session = sessionFactory.getCurrentSession();
         session.update(rentRequest);
         return rentRequest;
+    }
+
+    public List<RentRequest> findRentRequestForBook(int bookId) {
+        Session session = sessionFactory.getCurrentSession();
+        String hqlFindRequests = "select r from RentRequest r" +
+                "where r.book.id = :id and (r.rentrequestStatus='waiting_available' or r.rentrequestStatus='waiting_confirmation')";
+        Query queryFindRequests = session.createQuery(hqlFindRequests);
+        queryFindRequests.setParameter("id", bookId);
+        return queryFindRequests.getResultList();
     }
 }
