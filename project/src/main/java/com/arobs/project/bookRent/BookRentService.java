@@ -10,5 +10,7 @@ public interface BookRentService {
 
     void extendDeadlineBookRent(int id) throws ValidationException;
 
-    void returnBook(int id, double grade) throws ValidationException;
+    void returnBook(BookRent bookRent) throws ValidationException;
+
+    BookRent findBookRentById(int id) throws ValidationException;
 }

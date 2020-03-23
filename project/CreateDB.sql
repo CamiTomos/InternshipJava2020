@@ -107,6 +107,10 @@ create table rentrequests(
     primary key(id)
 );
 
+alter table rentrequests
+add emailSentDate datetime;
+
+
 
 create table bookrequests(
 	id int not null auto_increment,

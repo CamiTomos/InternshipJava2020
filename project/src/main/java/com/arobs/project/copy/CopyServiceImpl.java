@@ -39,8 +39,8 @@ public class CopyServiceImpl implements CopyService {
     @Transactional
     public CopyDTO insertCopy(CopyDTO copyDTO) throws ValidationException {
         String copyStatus = copyDTO.getCopyStatus().toUpperCase();
-        if (copyStatus.compareTo(String.valueOf(CopyStatus.PENDING)) != 0) {
-            throw new ValidationException("Status must be pending!");
+        if (copyStatus.compareTo(String.valueOf(CopyStatus.AVAILABLE)) != 0) {
+            throw new ValidationException("Status must be available!");
         }
         BookDTO foundBook = bookService.findById(copyDTO.getBookId());
         if (foundBook == null) {
@@ -92,7 +92,23 @@ public class CopyServiceImpl implements CopyService {
     @Override
     @Transactional
     public List<CopyDTO> findAvailableCopiesForBook(int bookId) {
-        return hibernateRepository.findCopiesForBook(bookId)
+        return hibernateRepository.findAvailableCopiesForBook(bookId)
+                .stream()
+                .map(ProjectModelMapper::convertCopyToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CopyDTO> findPendingCopiesForBook(int bookId) {
+        return hibernateRepository.findPendingCopiesForBook(bookId)
+                .stream()
+                .map(ProjectModelMapper::convertCopyToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<CopyDTO> findRentedCopiesForBook(int bookId) {
+        return hibernateRepository.findRentedCopiesForBook(bookId)
                 .stream()
                 .map(ProjectModelMapper::convertCopyToDTO)
                 .collect(Collectors.toList());

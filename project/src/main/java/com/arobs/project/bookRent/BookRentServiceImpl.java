@@ -1,10 +1,8 @@
 package com.arobs.project.bookRent;
 
-import com.arobs.project.copy.Copy;
 import com.arobs.project.copy.CopyService;
 import com.arobs.project.dtos.BookRentDTO;
 import com.arobs.project.enums.BookRentStatus;
-import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,17 +60,16 @@ public class BookRentServiceImpl implements BookRentService {
 
     @Override
     @Transactional
-    public void returnBook(int id, double grade) throws ValidationException {
+    public void returnBook(BookRent bookRent) throws ValidationException {
+        bookRentRepository.updateBookRent(bookRent);
+    }
+
+    @Override
+    public BookRent findBookRentById(int id) throws ValidationException {
         BookRent foundBookRent = bookRentRepository.getBookRentById(id);
         if (null == foundBookRent) {
             throw new ValidationException("Book rent not found!");
         }
-        foundBookRent.setBookrentReturnDate(new Timestamp(System.currentTimeMillis()));
-        foundBookRent.setBookrentNote(grade);
-        foundBookRent.setBookrentStatus(BookRentStatus.RETURNED.toString().toLowerCase());
-        Copy foundCopy = foundBookRent.getCopy();
-        foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
-        copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy));
-        bookRentRepository.updateBookRent(foundBookRent);
+        return foundBookRent;
     }
 }

@@ -3,12 +3,18 @@ package com.arobs.project.rentRequest;
 import com.arobs.project.dtos.RentRequestDTO;
 import com.arobs.project.exception.ValidationException;
 
+import java.util.List;
+
 public interface RentRequestService {
     void insertRentRequest(RentRequestDTO rentRequestDTO) throws ValidationException;
 
-    void acceptRentRequest(int id) throws ValidationException;
+    void acceptRentRequest(RentRequest rentRequest) throws ValidationException;
 
-    void declineRentRequest(int id) throws ValidationException;
+    RentRequest getRentRequestById(int id) throws ValidationException;
 
-    boolean findRequestByBook(int bookId);
+    void declineRentRequest(RentRequest rentRequest) throws ValidationException;
+
+    List<RentRequest> findWaitingAvailableCopiesRequests(int bookId);
+
+    void sendEmail(RentRequest selectedRequest);
 }

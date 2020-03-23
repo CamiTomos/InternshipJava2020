@@ -13,8 +13,10 @@ import com.arobs.project.employee.Employee;
 import com.arobs.project.employee.EmployeeService;
 import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.enums.CopyStatus;
+import com.arobs.project.enums.RentRequestStatus;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.mappers.ProjectModelMapper;
+import com.arobs.project.rentRequest.RentRequest;
 import com.arobs.project.rentRequest.RentRequestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -72,4 +74,68 @@ public class RentManager {
         calendar.add(Calendar.DAY_OF_WEEK, 30);
         return new Timestamp(calendar.getTime().getTime());
     }
+
+    @Transactional
+    public void returnBook(int id, double grade) throws ValidationException {
+        BookRent foundBookRent = bookRentService.findBookRentById(id);
+        if (null == foundBookRent) {
+            throw new ValidationException("Book rent not found!");
+        }
+        foundBookRent.setBookrentReturnDate(new Timestamp(System.currentTimeMillis()));
+        foundBookRent.setBookrentNote(grade);
+        foundBookRent.setBookrentStatus(BookRentStatus.RETURNED.toString().toLowerCase());
+        bookRentService.returnBook(foundBookRent);//here, the book is returned
+        List<RentRequest> requestsFoundForThisBook = rentRequestService.findWaitingAvailableCopiesRequests(foundBookRent.getBook().getId());
+        Copy foundCopy = foundBookRent.getCopy();
+        if (!requestsFoundForThisBook.isEmpty()) {
+            RentRequest selectedRequest = requestsFoundForThisBook.get(0);
+            foundCopy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
+            copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy));
+            selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
+            selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
+            rentRequestService.sendEmail(selectedRequest);//here, the email is sent
+        } else {
+            foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+            copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy));
+        }
+    }
+
+    @Transactional
+    public void acceptRentRequest(int id) throws ValidationException, ParseException {
+        RentRequest foundRentRequest = rentRequestService.getRentRequestById(id);
+        if (null == foundRentRequest) {
+            throw new ValidationException("Rent request with given id does not exist!");
+        }
+        CopyDTO copyDTO=copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
+        copyDTO.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+        copyService.updateCopy(copyDTO);
+        insertBookRent(new BookRentDTO(0,foundRentRequest.getEmployee().getId(),foundRentRequest.getBook().getId()));
+        foundRentRequest.setRentrequestStatus(RentRequestStatus.GRANTED.toString().toLowerCase());
+        rentRequestService.acceptRentRequest(foundRentRequest);
+    }
+
+    @Transactional
+    public void declineRentRequest(int id) throws ValidationException, ParseException {
+        RentRequest foundRentRequest = rentRequestService.getRentRequestById(id);
+        if (null == foundRentRequest) {
+            throw new ValidationException("Rent request with given id does not exist!");
+        }
+        List<RentRequest> requestsFoundForThisBook = rentRequestService.findWaitingAvailableCopiesRequests(foundRentRequest.getBook().getId());
+        CopyDTO foundCopy = copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
+        if (!requestsFoundForThisBook.isEmpty()) {
+            RentRequest selectedRequest = requestsFoundForThisBook.get(0);
+            foundCopy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
+            copyService.updateCopy(foundCopy);
+            selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
+            selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
+            rentRequestService.sendEmail(selectedRequest);//here, the email is sent
+        } else {
+            foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+            copyService.updateCopy(foundCopy);
+        }
+
+        foundRentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
+        rentRequestService.declineRentRequest(foundRentRequest);
+    }
+
 }

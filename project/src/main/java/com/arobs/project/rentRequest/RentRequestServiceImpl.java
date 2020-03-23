@@ -44,31 +44,35 @@ public class RentRequestServiceImpl implements RentRequestService {
 
     @Override
     @Transactional
-    public void acceptRentRequest(int id) throws ValidationException {
-        RentRequest foundRentRequest = rentRequestRepository.getRentRequestById(id);
-        if (null == foundRentRequest) {
-            throw new ValidationException("Rent request with given id does not exist!");
+    public void acceptRentRequest(RentRequest rentRequest) throws ValidationException {
+        rentRequestRepository.updateRentRequest(rentRequest);
+    }
+
+    @Override
+    public RentRequest getRentRequestById(int id) throws ValidationException {
+        RentRequest rentRequest=rentRequestRepository.getRentRequestById(id);
+        if(null==rentRequest){
+            throw new ValidationException("There is no rent request with given id!");
         }
-        foundRentRequest.setRentrequestStatus(RentRequestStatus.GRANTED.toString().toLowerCase());
-        rentRequestRepository.updateRentRequest(foundRentRequest);
+        return rentRequest;
     }
 
     @Override
     @Transactional
-    public void declineRentRequest(int id) throws ValidationException {
-        RentRequest foundRentRequest = rentRequestRepository.getRentRequestById(id);
-        if (null == foundRentRequest) {
-            throw new ValidationException("Rent request with given id does not exist!");
-        }
-        foundRentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
-        rentRequestRepository.updateRentRequest(foundRentRequest);
+    public void declineRentRequest(RentRequest rentRequest) throws ValidationException {
+        rentRequestRepository.updateRentRequest(rentRequest);
     }
 
     @Override
     @Transactional
-    public boolean findRequestByBook(int bookId) {
-        List<RentRequest> foundRentRequests = rentRequestRepository.findRentRequestForBook(bookId);
-        return foundRentRequests.size() != 0;
+    public List<RentRequest> findWaitingAvailableCopiesRequests(int bookId) {
+        List<RentRequest> foundRentRequests = rentRequestRepository.findWaitingAvailableCopiesRequests(bookId);
+        return foundRentRequests;
+    }
+
+    @Override
+    public void sendEmail(RentRequest selectedRequest) {
+        rentRequestRepository.updateRentRequest(selectedRequest);
     }
 
 

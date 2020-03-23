@@ -22,6 +22,9 @@ public class RentRequest implements Serializable {
     @Column(name = "rentrequestStatus")
     private String rentrequestStatus;
 
+    @Column(name = "emailSentDate")
+    private Timestamp emailSentDate;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "employeeID")
     private Employee employee;
@@ -37,6 +40,15 @@ public class RentRequest implements Serializable {
         this.id = id;
         this.rentrequestRequestDate = rentrequestRequestDate;
         this.rentrequestStatus = rentrequestStatus;
+        this.employee = employee;
+        this.book = book;
+    }
+
+    public RentRequest(int id, Timestamp rentrequestRequestDate, String rentrequestStatus, Timestamp emailSentDate, Employee employee, Book book) {
+        this.id = id;
+        this.rentrequestRequestDate = rentrequestRequestDate;
+        this.rentrequestStatus = rentrequestStatus;
+        this.emailSentDate = emailSentDate;
         this.employee = employee;
         this.book = book;
     }
@@ -81,6 +93,14 @@ public class RentRequest implements Serializable {
         this.book = book;
     }
 
+    public Timestamp getEmailSentDate() {
+        return emailSentDate;
+    }
+
+    public void setEmailSentDate(Timestamp emailSentDate) {
+        this.emailSentDate = emailSentDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,8 +120,7 @@ public class RentRequest implements Serializable {
                 "id=" + id +
                 ", rentrequestRequestDate=" + rentrequestRequestDate +
                 ", rentrequestStatus='" + rentrequestStatus + '\'' +
-//                ", employee=" + employee +
-//                ", book=" + book +
+                ", emailSentDate=" + emailSentDate +
                 '}';
     }
 }

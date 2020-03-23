@@ -33,7 +33,7 @@ public class BookRentScheduledService {
     @Scheduled(fixedRate = 10000)//10 seconds
     @Transactional
     public void markRentalsLate() {
-        log.info("The time is now {}", dateFormat.format(new Date()));
+        log.info("Late rentals the time is now {}", dateFormat.format(new Date()));
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         List<BookRent> lateRentals = bookRentRepository.markRentalsLate(currentTime);
         lateRentals.forEach(bookRent -> bookRent.setBookrentStatus("late"));

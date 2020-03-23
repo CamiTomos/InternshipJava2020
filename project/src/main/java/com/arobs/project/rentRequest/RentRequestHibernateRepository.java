@@ -34,12 +34,19 @@ public class RentRequestHibernateRepository {
         return rentRequest;
     }
 
-    public List<RentRequest> findRentRequestForBook(int bookId) {
+    public List<RentRequest> findWaitingAvailableCopiesRequests(int bookId) {
         Session session = sessionFactory.getCurrentSession();
-        String hqlFindRequests = "select r from RentRequest r" +
-                "where r.book.id = :id and (r.rentrequestStatus='waiting_available' or r.rentrequestStatus='waiting_confirmation')";
+        String hqlFindRequests = "select r from RentRequest r " +
+                "where r.book.id = :id and r.rentrequestStatus='waiting_available'";
         Query queryFindRequests = session.createQuery(hqlFindRequests);
         queryFindRequests.setParameter("id", bookId);
         return queryFindRequests.getResultList();
+    }
+
+    public List<RentRequest> findWaitingConfirmationRequests() {
+        Session session = sessionFactory.getCurrentSession();
+        String hqlFindRequests = "select r from RentRequest r " +
+                "where r.rentrequestStatus='waiting_confirmation'";
+        return session.createQuery(hqlFindRequests).getResultList();
     }
 }

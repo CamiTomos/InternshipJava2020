@@ -17,4 +17,6 @@ public interface CopyService {
     CopyDTO findCopyById(int id) throws ValidationException;
 
     List<CopyDTO> findAvailableCopiesForBook(int bookId);
+    List<CopyDTO> findPendingCopiesForBook(int bookId);
+    List<CopyDTO> findRentedCopiesForBook(int bookId);
 }

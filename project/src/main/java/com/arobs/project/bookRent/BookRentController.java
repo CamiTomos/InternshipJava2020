@@ -50,7 +50,7 @@ public class BookRentController {
             return new ResponseEntity<>("Grade must be between 1 and 5!", HttpStatus.NOT_ACCEPTABLE);
         }
         try {
-            bookRentService.returnBook(id, grade);
+            rentManager.returnBook(id, grade);
             return new ResponseEntity<>("Book returned successfully!", HttpStatus.OK);
         } catch (ValidationException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
