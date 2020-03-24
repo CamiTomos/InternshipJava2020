@@ -45,7 +45,8 @@ public class RentRequestScheduledService {
     }
 
     @Async
-    @Scheduled(fixedRate = 30000)//30 seconds
+//    @Scheduled(fixedRate = 30000)//for testing, 30 seconds
+    @Scheduled(fixedRate = 60000 * 60)//1 hour
     @Transactional
     public void checkEmailConfirmation() {
         log.info("Email confirmation the time is now {}", dateFormat.format(new Date()));

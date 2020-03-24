@@ -30,7 +30,8 @@ public class BookRentScheduledService {
     }
 
     @Async
-    @Scheduled(fixedRate = 10000)//10 seconds
+//    @Scheduled(fixedRate = 10000)// for testing, 10 seconds
+    @Scheduled(fixedRate = 60000 * 60 * 24)// 1 day
     @Transactional
     public void markRentalsLate() {
         log.info("Late rentals the time is now {}", dateFormat.format(new Date()));

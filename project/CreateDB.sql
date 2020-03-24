@@ -127,3 +127,28 @@ create table bookrequests(
 );
     
     
+
+-- asta e ok for 1
+select b.bookTitle, count(*) 
+from books b inner join bookrents r on b.id=r.bookID
+where r.bookrentRentalDate between '2020-03-23 22:54:53' and '2020-03-23 23:02:39'
+group by b.bookTitle
+order by count(*) desc
+limit 3;
+
+-- asta e ok for 2
+select e.employeeName, COUNT(*)
+from employees e inner join bookrents r on e.id=r.employeeID
+where r.bookrentReturnDate between '2020-03-23 22:07:49' and '2020-03-23 23:17:37'
+	  and r.bookrentStatus='returned'
+group by e.employeeName
+order by COUNT(*) DESC
+limit 2;
+
+
+-- asta e ok for 3
+ select e.employeeName
+ from employees e inner join bookrents r on e.id=r.employeeID
+ where r.bookrentStatus='late';
+
+
