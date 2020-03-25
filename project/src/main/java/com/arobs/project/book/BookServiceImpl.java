@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
     private BookHibernateRepository bookRepository;
     private TagService tagService;
-    private final Logger log = LoggerFactory.getLogger(BookHibernateRepository.class);
+    private final Logger log = LoggerFactory.getLogger("FILE");
 
     @Autowired
     public BookServiceImpl(BookHibernateRepository bookRepository, TagService tagService) {

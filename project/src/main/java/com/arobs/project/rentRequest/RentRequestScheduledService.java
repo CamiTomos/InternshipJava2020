@@ -28,7 +28,7 @@ import java.util.List;
 @EnableTransactionManagement
 @EnableAsync
 public class RentRequestScheduledService {
-    private final Logger log = LoggerFactory.getLogger(BookRentScheduledService.class);
+    private final Logger log = LoggerFactory.getLogger("FILE");
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
     private final RentRequestHibernateRepository rentRequestRepository;

@@ -13,7 +13,7 @@ import java.util.List;
 @Repository("bookHibernateRepository")
 public class BookHibernateRepository {
     private SessionFactory sessionFactory;
-    private final Logger log = LoggerFactory.getLogger(BookHibernateRepository.class);
+    private final Logger log = LoggerFactory.getLogger("FILE");
 
     @Autowired
     public BookHibernateRepository(SessionFactory sessionFactory) {

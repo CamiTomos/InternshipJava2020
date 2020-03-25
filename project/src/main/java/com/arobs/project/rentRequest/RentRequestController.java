@@ -4,6 +4,8 @@ package com.arobs.project.rentRequest;
 import com.arobs.project.dtos.RentRequestDTO;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.managers.RentManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import java.text.ParseException;
 public class RentRequestController {
     private RentRequestService rentRequestService;
     private RentManager rentManager;
+    private final Logger log = LoggerFactory.getLogger("FILE");
 
     @Autowired
     public RentRequestController(RentRequestService rentRequestService, RentManager rentManager) {
@@ -26,9 +29,11 @@ public class RentRequestController {
     @PostMapping(value = "/rentRequests")
     public ResponseEntity<?> handleInsertRentRequest(@RequestBody RentRequestDTO rentRequestDTO) {
         try {
+            log.info("Rent request successfully inserted!");
             rentRequestService.insertRentRequest(rentRequestDTO);
             return new ResponseEntity<>("Rent request successfully inserted!", HttpStatus.OK);
         } catch (ValidationException ex) {
+            log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
     }
@@ -36,11 +41,14 @@ public class RentRequestController {
     @PutMapping(value = "/rentRequests/accept/{id}")
     public ResponseEntity<?> handleAcceptRequest(@PathVariable int id) {
         try {
+            log.info("Rent request successfully accepted!");
             rentManager.acceptRentRequest(id);
             return new ResponseEntity<>("Rent request successfully accepted!", HttpStatus.OK);
         } catch (ValidationException ex) {
+            log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         } catch (ParseException e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>("Date can not be parsed!", HttpStatus.BAD_REQUEST);
         }
     }
@@ -48,12 +56,12 @@ public class RentRequestController {
     @PutMapping(value = "/rentRequests/decline/{id}")
     public ResponseEntity<?> handleDeclineRequest(@PathVariable int id) {
         try {
+            log.info("Rent request successfully declined!");
             rentManager.declineRentRequest(id);
             return new ResponseEntity<>("Rent request successfully declined!", HttpStatus.OK);
         } catch (ValidationException ex) {
+            log.error("Rent request successfully declined!");
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (ParseException e) {
-            return new ResponseEntity<>("Date can not be parsed!", HttpStatus.BAD_REQUEST);
         }
     }
 }

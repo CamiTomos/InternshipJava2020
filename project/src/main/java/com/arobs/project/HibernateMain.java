@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 public class HibernateMain {
-    private static final Logger log = LoggerFactory.getLogger(HibernateMain.class);
+    private static final Logger log = LoggerFactory.getLogger("FILE");
 
     public static void main(String[] args) {
         Transaction transaction = null;

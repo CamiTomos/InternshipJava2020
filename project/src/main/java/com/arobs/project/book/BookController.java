@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/library-app")
 public class BookController {
     private BookServiceImpl bookService;
-    private final Logger log = LoggerFactory.getLogger(BookController.class);
+    private final Logger log = LoggerFactory.getLogger("FILE");
 
     @Autowired
     public BookController(BookServiceImpl bookService) {
@@ -64,5 +64,4 @@ public class BookController {
             return new ResponseEntity<>("Book was not deleted!", HttpStatus.BAD_REQUEST);
         }
     }
-
 }

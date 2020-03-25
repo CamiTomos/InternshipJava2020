@@ -15,7 +15,7 @@ import java.util.List;
 @Repository("bookRentHibernateRepository")
 public class BookRentHibernateRepository {
     private SessionFactory sessionFactory;
-    private final Logger log = LoggerFactory.getLogger(BookHibernateRepository.class);
+    private final Logger log = LoggerFactory.getLogger("FILE");
 
     @Autowired
     public BookRentHibernateRepository(SessionFactory sessionFactory) {
