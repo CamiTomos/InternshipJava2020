@@ -30,7 +30,7 @@ public class RentRequestController {
     public ResponseEntity<?> handleInsertRentRequest(@RequestBody RentRequestDTO rentRequestDTO) {
         try {
             log.info("Rent request successfully inserted!");
-            rentRequestService.insertRentRequest(rentRequestDTO);
+            rentRequestService.insertRentRequest(rentRequestDTO.getEmployeeId(), rentRequestDTO.getBookId());
             return new ResponseEntity<>("Rent request successfully inserted!", HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error(ex.getMessage());

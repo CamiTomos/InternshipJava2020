@@ -1,14 +1,12 @@
 package com.arobs.project.tag;
 
-import com.arobs.project.dtos.TagDTO;
-import com.arobs.project.mappers.ProjectModelMapper;
+import com.arobs.project.exception.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("tagServiceImpl")
 @EnableTransactionManagement
@@ -22,59 +20,54 @@ public class TagServiceImpl implements TagService {
 
     @Override
     @Transactional
-    public List<TagDTO> findAllTags() {
-        return hibernateRepository.findAllTags()
-                .stream()
-                .map(ProjectModelMapper::convertTagToDTO)
-                .collect(Collectors.toList());
+    public List<Tag> findAllTags() {
+        return hibernateRepository.findAllTags();
     }
 
     @Override
     @Transactional
-    public TagDTO insertTag(TagDTO tagDTO) {
-        Tag tag = ProjectModelMapper.convertDTOtoTag(tagDTO);
-        return ProjectModelMapper.convertTagToDTO(hibernateRepository.insertTag(tag));
+    public Tag insertTag(Tag tag) {
+        return hibernateRepository.insertTag(tag);
     }
 
     @Override
     @Transactional
-    public TagDTO findTagByDescription(String description) {
+    public Tag findTagByDescription(String description) throws ValidationException {
         List<Tag> foundTags = hibernateRepository.getTagsByDescription(description);
-        if (foundTags.size() == 1) {
-            return ProjectModelMapper.convertTagToDTO(foundTags.get(0));
+        if (foundTags.isEmpty()) {
+            throw new ValidationException("Sorry! There is no tag with given description!");
         }
-        return null;
+        return foundTags.get(0);
     }
 
     @Override
     @Transactional
-    public TagDTO findTagById(int id) {
+    public Tag findTagById(int id) throws ValidationException {
         Tag foundTag = hibernateRepository.findTagById(id);
-        if (foundTag != null) {
-            return ProjectModelMapper.convertTagToDTO(foundTag);
+        if (null == foundTag) {
+            throw new ValidationException("Sorry! There is no tag with given id!");
         }
-        return null;
+        return foundTag;
     }
 
     @Override
     @Transactional
     public boolean deleteTag(int id) {
         Tag foundTag = hibernateRepository.findTagById(id);
-        if (foundTag != null) {
-            hibernateRepository.deleteTag(foundTag);
-            return true;
+        if (null == foundTag) {
+            return false;
         }
-        return false;
+        hibernateRepository.deleteTag(foundTag);
+        return true;
     }
 
     @Override
     @Transactional
-    public TagDTO updateTag(TagDTO tagDTO) {
-        Tag foundTag = hibernateRepository.findTagById(tagDTO.getId());
-        if (foundTag != null) {
-            Tag tag = ProjectModelMapper.convertDTOtoTag(tagDTO);
-            return ProjectModelMapper.convertTagToDTO(hibernateRepository.updateTag(tag));
+    public Tag updateTag(Tag tag) throws ValidationException {
+        Tag foundTag = hibernateRepository.findTagById(tag.getId());
+        if (null == foundTag) {
+            throw new ValidationException("Sorry! This tag can not be updated!");
         }
-        return null;
+        return hibernateRepository.updateTag(tag);
     }
 }

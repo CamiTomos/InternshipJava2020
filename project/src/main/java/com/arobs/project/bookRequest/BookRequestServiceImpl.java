@@ -1,18 +1,15 @@
 package com.arobs.project.bookRequest;
 
-import com.arobs.project.dtos.BookRequestDTO;
-import com.arobs.project.dtos.EmployeeDTO;
+import com.arobs.project.employee.Employee;
 import com.arobs.project.employee.EmployeeService;
 import com.arobs.project.enums.BookRequestStatus;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("bookRequestServiceImpl")
 @EnableTransactionManagement
@@ -28,31 +25,28 @@ public class BookRequestServiceImpl implements BookRequestService {
 
     @Override
     @Transactional
-    public List<BookRequestDTO> findAllBookRequests() {
-        return bookRequestRepository.findAllBookRequests()
-                .stream()
-                .map(ProjectModelMapper::convertBookRequestToDTO)
-                .collect(Collectors.toList());
+    public List<BookRequest> findAllBookRequests() {
+        return bookRequestRepository.findAllBookRequests();
     }
 
     @Override
     @Transactional
-    public BookRequestDTO insertBookRequest(BookRequestDTO bookRequestDTO) throws ValidationException {
-        EmployeeDTO employeeDTO = employeeService.findEmployeeByID(bookRequestDTO.getEmployeeId());
-        if (employeeDTO == null) {
+    public BookRequest insertBookRequest(BookRequest bookRequest) throws ValidationException {
+        Employee employee = employeeService.findEmployeeByID(bookRequest.getEmployee().getId());
+        if (null == employee) {
             throw new ValidationException("The given employee does not exist!");
         }
-        if (bookRequestDTO.getBookrequestStatus().toUpperCase().compareTo(String.valueOf(BookRequestStatus.PENDING)) != 0) {
+        if (bookRequest.getBookrequestStatus().toUpperCase().compareTo(String.valueOf(BookRequestStatus.PENDING)) != 0) {
             throw new ValidationException("Status must be pending!");
         }
-        return ProjectModelMapper.convertBookRequestToDTO(bookRequestRepository.insertBookRequest(ProjectModelMapper.convertDTOtoBookRequest(bookRequestDTO)));
+        return bookRequestRepository.insertBookRequest(bookRequest);
     }
 
     @Override
     @Transactional
     public boolean deleteBookRequest(int id) {
         BookRequest foundBookRequest = bookRequestRepository.findBookRequestById(id);
-        if (foundBookRequest == null) {
+        if (null == foundBookRequest) {
             return false;
         }
         return bookRequestRepository.deleteBookRequest(foundBookRequest);
@@ -60,27 +54,27 @@ public class BookRequestServiceImpl implements BookRequestService {
 
     @Override
     @Transactional
-    public BookRequestDTO updateBookRequest(BookRequestDTO bookRequestDTO) throws ValidationException {
-        BookRequest foundBookRequest = bookRequestRepository.findBookRequestById(bookRequestDTO.getId());
-        if (foundBookRequest == null) {
-            return null;
+    public BookRequest updateBookRequest(BookRequest bookRequest) throws ValidationException {
+        BookRequest foundBookRequest = bookRequestRepository.findBookRequestById(bookRequest.getId());
+        if (null == foundBookRequest) {
+            throw new ValidationException("BookRequest with given id does not exist!");
         }
-        String givenStatus = bookRequestDTO.getBookrequestStatus().toUpperCase();
+        String givenStatus = bookRequest.getBookrequestStatus().toUpperCase();
         if (givenStatus.compareTo(String.valueOf(BookRequestStatus.PENDING)) != 0 &&
                 givenStatus.compareTo(String.valueOf(BookRequestStatus.ACCEPTED)) != 0 &&
                 givenStatus.compareTo(String.valueOf(BookRequestStatus.REJECTED)) != 0) {
             throw new ValidationException("Status must be pending or accepted or rejected!");
         }
-        return ProjectModelMapper.convertBookRequestToDTO(bookRequestRepository.updateBookRequest(ProjectModelMapper.convertDTOtoBookRequest(bookRequestDTO)));
+        return bookRequestRepository.updateBookRequest(bookRequest);
     }
 
     @Override
     @Transactional
-    public BookRequestDTO findBookRequestById(int id) {
+    public BookRequest findBookRequestById(int id) throws ValidationException {
         BookRequest foundBookRequest = bookRequestRepository.findBookRequestById(id);
         if (null == foundBookRequest) {
-            return null;
+            throw new ValidationException("Book request with given id does not exist!");
         }
-        return ProjectModelMapper.convertBookRequestToDTO(foundBookRequest);
+        return foundBookRequest;
     }
 }

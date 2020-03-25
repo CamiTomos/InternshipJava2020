@@ -1,24 +1,23 @@
 package com.arobs.project.copy;
 
-import com.arobs.project.dtos.CopyDTO;
 import com.arobs.project.exception.ValidationException;
 
 import java.util.List;
 
 public interface CopyService {
-    List<CopyDTO> findAllCopies();
+    List<Copy> findAllCopies();
 
-    CopyDTO insertCopy(CopyDTO copyDTO) throws ValidationException;
+    Copy insertCopy(Copy copy) throws ValidationException;
 
     boolean deleteCopy(int id);
 
-    CopyDTO updateCopy(CopyDTO copyDTO) throws ValidationException;
+    Copy updateCopy(Copy copy) throws ValidationException;
 
-    CopyDTO findCopyById(int id) throws ValidationException;
+    Copy findCopyById(int id) throws ValidationException;
 
-    List<CopyDTO> findAvailableCopiesForBook(int bookId);
+    List<Copy> findAvailableCopiesForBook(int bookId);
 
-    List<CopyDTO> findPendingCopiesForBook(int bookId);
+    List<Copy> findPendingCopiesForBook(int bookId);
 
-    List<CopyDTO> findRentedCopiesForBook(int bookId);
+    List<Copy> findRentedCopiesForBook(int bookId);
 }

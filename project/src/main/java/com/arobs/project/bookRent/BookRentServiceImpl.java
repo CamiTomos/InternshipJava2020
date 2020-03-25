@@ -1,9 +1,7 @@
 package com.arobs.project.bookRent;
 
-import com.arobs.project.dtos.BookRentDTO;
 import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -24,10 +22,9 @@ public class BookRentServiceImpl implements BookRentService {
 
     @Override
     @Transactional
-    public BookRentDTO insertBookRent(BookRent bookRent) {
-        return ProjectModelMapper.convertBookRentToDTO(bookRentRepository.insertBookRent(bookRent));
+    public BookRent insertBookRent(BookRent bookRent) {
+        return bookRentRepository.insertBookRent(bookRent);
     }
-
 
     @Override
     @Transactional

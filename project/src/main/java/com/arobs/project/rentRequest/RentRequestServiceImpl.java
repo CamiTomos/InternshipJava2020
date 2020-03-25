@@ -2,12 +2,10 @@ package com.arobs.project.rentRequest;
 
 import com.arobs.project.book.Book;
 import com.arobs.project.book.BookService;
-import com.arobs.project.dtos.RentRequestDTO;
 import com.arobs.project.employee.Employee;
 import com.arobs.project.employee.EmployeeService;
 import com.arobs.project.enums.RentRequestStatus;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -32,9 +30,9 @@ public class RentRequestServiceImpl implements RentRequestService {
 
     @Override
     @Transactional
-    public void insertRentRequest(RentRequestDTO rentRequestDTO) throws ValidationException {
-        Book foundBook = ProjectModelMapper.convertDTOtoBook(bookService.findBookById(rentRequestDTO.getBookId()));
-        Employee foundEmployee = ProjectModelMapper.convertDTOtoEmployee(employeeService.findEmployeeByID(rentRequestDTO.getEmployeeId()));
+    public void insertRentRequest(int employeeId, int bookId) throws ValidationException {
+        Book foundBook = bookService.findBookById(bookId);
+        Employee foundEmployee = employeeService.findEmployeeByID(employeeId);
         Timestamp requestDate = new Timestamp(System.currentTimeMillis());
         String rentRequestStatus = RentRequestStatus.WAITING_AVAILABLE.toString().toLowerCase();
         RentRequest rentRequestToInsert = new RentRequest(0, requestDate, rentRequestStatus, foundEmployee, foundBook);

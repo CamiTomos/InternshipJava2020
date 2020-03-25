@@ -1,18 +1,17 @@
 package com.arobs.project.employee;
 
-import com.arobs.project.dtos.EmployeeDTO;
 import com.arobs.project.exception.ValidationException;
 
 import java.util.List;
 
 public interface EmployeeService {
-    List<EmployeeDTO> findAllEmployees();
+    List<Employee> findAllEmployees();
 
-    EmployeeDTO insertEmployee(EmployeeDTO employeeDTO);
+    Employee insertEmployee(Employee employee);
 
     boolean deleteEmployee(int id);
 
-    EmployeeDTO updateEmployee(EmployeeDTO employeeDTO);
+    Employee updateEmployee(Employee employee) throws ValidationException;
 
-    EmployeeDTO findEmployeeByID(int id) throws ValidationException;
+    Employee findEmployeeByID(int id) throws ValidationException;
 }

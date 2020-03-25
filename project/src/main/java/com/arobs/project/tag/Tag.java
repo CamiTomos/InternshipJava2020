@@ -59,12 +59,13 @@ public class Tag implements Serializable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Tag tag = (Tag) o;
-        return id == tag.id;
+        return id == tag.id &&
+                tagDescription.equals(tag.tagDescription);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, tagDescription);
     }
 
     @Override

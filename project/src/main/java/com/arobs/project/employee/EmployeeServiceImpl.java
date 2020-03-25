@@ -1,15 +1,12 @@
 package com.arobs.project.employee;
 
-import com.arobs.project.dtos.EmployeeDTO;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.mappers.ProjectModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service("employeeServiceImpl")
 @EnableTransactionManagement
@@ -23,18 +20,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public List<EmployeeDTO> findAllEmployees() {
-        return hibernateRepository.findAllEmployees()
-                .stream()
-                .map(ProjectModelMapper::convertEmployeeToDTO)
-                .collect(Collectors.toList());
+    public List<Employee> findAllEmployees() {
+        return hibernateRepository.findAllEmployees();
     }
 
     @Override
     @Transactional
-    public EmployeeDTO insertEmployee(EmployeeDTO employeeDTO) {
-        Employee employee = ProjectModelMapper.convertDTOtoEmployee(employeeDTO);
-        return ProjectModelMapper.convertEmployeeToDTO(hibernateRepository.insertEmployee(employee));
+    public Employee insertEmployee(Employee employee) {
+        return hibernateRepository.insertEmployee(employee);
     }
 
     @Override
@@ -49,22 +42,21 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     @Transactional
-    public EmployeeDTO updateEmployee(EmployeeDTO employeeDTO) {
-        Employee foundEmployee = hibernateRepository.findById(employeeDTO.getId());
-        if (foundEmployee == null) {
-            return null;
+    public Employee updateEmployee(Employee employee) throws ValidationException {
+        Employee foundEmployee = hibernateRepository.findById(employee.getId());
+        if (null == foundEmployee) {
+            throw new ValidationException("The given employee does not exist!");
         }
-        return ProjectModelMapper.convertEmployeeToDTO(hibernateRepository.updateEmployee(ProjectModelMapper.convertDTOtoEmployee(employeeDTO)));
+        return hibernateRepository.updateEmployee(employee);
     }
 
     @Override
     @Transactional
-    public EmployeeDTO findEmployeeByID(int id) throws ValidationException {
+    public Employee findEmployeeByID(int id) throws ValidationException {
         Employee foundEmployee = hibernateRepository.findById(id);
-        if (foundEmployee == null) {
+        if (null == foundEmployee) {
             throw new ValidationException("The employee with given id does not exist!");
         }
-        return ProjectModelMapper.convertEmployeeToDTO(foundEmployee);
+        return foundEmployee;
     }
-
 }

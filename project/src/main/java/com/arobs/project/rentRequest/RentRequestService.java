@@ -1,12 +1,11 @@
 package com.arobs.project.rentRequest;
 
-import com.arobs.project.dtos.RentRequestDTO;
 import com.arobs.project.exception.ValidationException;
 
 import java.util.List;
 
 public interface RentRequestService {
-    void insertRentRequest(RentRequestDTO rentRequestDTO) throws ValidationException;
+    void insertRentRequest(int employeeId, int bookId) throws ValidationException;
 
     void acceptRentRequest(RentRequest rentRequest) throws ValidationException;
 

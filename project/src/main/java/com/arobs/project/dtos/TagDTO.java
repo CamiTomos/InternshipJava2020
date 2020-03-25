@@ -2,7 +2,7 @@ package com.arobs.project.dtos;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-@JsonIgnoreProperties(value = "id", allowGetters = true)
+//@JsonIgnoreProperties(value = "id", allowGetters = true)
 public class TagDTO {
     private int id;
     private String tagDescription;

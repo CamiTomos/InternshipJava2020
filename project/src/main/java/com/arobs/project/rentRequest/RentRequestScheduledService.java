@@ -1,9 +1,8 @@
 package com.arobs.project.rentRequest;
 
 import com.arobs.project.book.Book;
-import com.arobs.project.bookRent.BookRentScheduledService;
+import com.arobs.project.copy.Copy;
 import com.arobs.project.copy.CopyService;
-import com.arobs.project.dtos.CopyDTO;
 import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.enums.RentRequestStatus;
 import com.arobs.project.exception.ValidationException;
@@ -61,8 +60,8 @@ public class RentRequestScheduledService {
                         rentRequestToBeUpdated.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
                         rentRequestRepository.updateRentRequest(rentRequestToBeUpdated);
                         Book book = rentRequestToBeUpdated.getBook();
-                        List<CopyDTO> pendingCopies = copyService.findPendingCopiesForBook(book.getId());
-                        CopyDTO copyToBeUpdated = pendingCopies.get(0);
+                        List<Copy> pendingCopies = copyService.findPendingCopiesForBook(book.getId());
+                        Copy copyToBeUpdated = pendingCopies.get(0);
                         try {
                             notifyNextEmployee(book.getId(), copyToBeUpdated);
                         } catch (ValidationException e) {
@@ -73,18 +72,18 @@ public class RentRequestScheduledService {
         );
     }
 
-    private void notifyNextEmployee(int bookId, CopyDTO copyDTO) throws ValidationException {
+    private void notifyNextEmployee(int bookId, Copy copy) throws ValidationException {
         List<RentRequest> requestsFoundForThisBook = rentRequestService.findWaitingAvailableCopiesRequests(bookId);
         if (!requestsFoundForThisBook.isEmpty()) {
             RentRequest selectedRequest = requestsFoundForThisBook.get(0);
-            copyDTO.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
-            copyService.updateCopy(copyDTO);
+            copy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
+//            copyService.updateCopy(copyDTO);
             selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
             rentRequestService.sendEmail(selectedRequest);//here, the email is sent
         } else {
-            copyDTO.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
-            copyService.updateCopy(copyDTO);
+            copy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+//            copyService.updateCopy(copyDTO);
         }
     }
 }

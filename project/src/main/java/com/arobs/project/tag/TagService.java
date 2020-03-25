@@ -1,19 +1,20 @@
 package com.arobs.project.tag;
 
 import com.arobs.project.dtos.TagDTO;
+import com.arobs.project.exception.ValidationException;
 
 import java.util.List;
 
 public interface TagService {
-    List<TagDTO> findAllTags();
+    List<Tag> findAllTags();
 
-    TagDTO insertTag(TagDTO tagDTO);
+    Tag insertTag(Tag tag);
 
-    TagDTO findTagByDescription(String description);
+    Tag findTagByDescription(String description) throws ValidationException;
 
-    TagDTO findTagById(int id);
+    Tag findTagById(int id) throws ValidationException;
 
     boolean deleteTag(int id);
 
-    TagDTO updateTag(TagDTO tagDTO);
+    Tag updateTag(Tag tag) throws ValidationException;
 }

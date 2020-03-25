@@ -1,12 +1,17 @@
 package com.arobs.project.tag;
 
 import com.arobs.project.dtos.TagDTO;
+import com.arobs.project.exception.ValidationException;
+import com.arobs.project.mappers.ProjectModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/library-app")
@@ -22,46 +27,55 @@ public class TagController {
     @PostMapping(value = "/tags")
     public ResponseEntity<?> handleInsertTag(@RequestBody TagDTO tagDTO) {
         log.info("Tag inserted!");
-        return new ResponseEntity<>(service.insertTag(tagDTO), HttpStatus.OK);
+        Tag tag = ProjectModelMapper.convertDTOtoTag(tagDTO);
+        return new ResponseEntity<>(ProjectModelMapper.convertTagToDTO(service.insertTag(tag)), HttpStatus.OK);
     }
 
     @GetMapping(value = "/tags", produces = "application/json")
     public ResponseEntity<?> handleFindAllTags() {
         log.info("Tags found!");
-        return new ResponseEntity<>(service.findAllTags(), HttpStatus.OK);
+        List<TagDTO> foundTags = service.findAllTags()
+                .stream()
+                .map(ProjectModelMapper::convertTagToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(foundTags, HttpStatus.OK);
     }
 
     @GetMapping(value = "/tags/description")
     public ResponseEntity<?> handleFindByDescription(@RequestParam(value = "description") String description) {
-        TagDTO foundTag = service.findTagByDescription(description);
-        if (foundTag == null) {
-            log.error("Sorry! There is no tag with given description!");
-            return new ResponseEntity<>("Sorry! There is no tag with given description!", HttpStatus.NOT_FOUND);
+        try {
+            TagDTO foundTag = ProjectModelMapper.convertTagToDTO(service.findTagByDescription(description));
+            log.info("Tag with {} description found!", description);
+            return new ResponseEntity<>(foundTag, HttpStatus.OK);
+        } catch (ValidationException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        log.info("Tag with {} description found!", description);
-        return new ResponseEntity<>(foundTag, HttpStatus.OK);
     }
 
     @GetMapping(value = "/tags/{id}")
     public ResponseEntity<?> handleFindTagById(@PathVariable int id) {
-        TagDTO foundTag = service.findTagById(id);
-        if (foundTag == null) {
-            log.error("Sorry! There is no tag with given id!");
-            return new ResponseEntity<>("Sorry! There is no tag with given id!", HttpStatus.NOT_FOUND);
+        try {
+            TagDTO foundTag = ProjectModelMapper.convertTagToDTO(service.findTagById(id));
+            log.info("Tag found!");
+            return new ResponseEntity<>(foundTag, HttpStatus.OK);
+        } catch (ValidationException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        log.info("Tag found!");
-        return new ResponseEntity<>(foundTag, HttpStatus.OK);
     }
 
     @PutMapping(value = "/tags")
     public ResponseEntity<?> handleUpdateTag(@RequestBody TagDTO tagDTO) {
-        TagDTO updatedTag = service.updateTag(tagDTO);
-        if (updatedTag == null) {
-            log.error("Sorry! This tag can not be updated!");
-            return new ResponseEntity<>("Sorry! This tag can not be updated!", HttpStatus.BAD_REQUEST);
+        try {
+            Tag mappedTag = ProjectModelMapper.convertDTOtoTag(tagDTO);
+            TagDTO updatedTag = ProjectModelMapper.convertTagToDTO(service.updateTag(mappedTag));
+            log.info("Tag updated!");
+            return new ResponseEntity<>(updatedTag, HttpStatus.OK);
+        } catch (ValidationException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        log.info("Tag updated!");
-        return new ResponseEntity<>(updatedTag, HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/tags/{id}")

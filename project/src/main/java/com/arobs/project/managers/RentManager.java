@@ -6,18 +6,16 @@ import com.arobs.project.bookRent.BookRent;
 import com.arobs.project.bookRent.BookRentService;
 import com.arobs.project.copy.Copy;
 import com.arobs.project.copy.CopyService;
-import com.arobs.project.dtos.BookRentDTO;
-import com.arobs.project.dtos.CopyDTO;
-import com.arobs.project.dtos.RentRequestDTO;
 import com.arobs.project.employee.Employee;
 import com.arobs.project.employee.EmployeeService;
 import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.enums.RentRequestStatus;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.mappers.ProjectModelMapper;
 import com.arobs.project.rentRequest.RentRequest;
 import com.arobs.project.rentRequest.RentRequestService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -36,6 +34,7 @@ public class RentManager {
     private BookService bookService;
     private CopyService copyService;
     private EmployeeService employeeService;
+    private final Logger log = LoggerFactory.getLogger("FILE");
 
     @Autowired
     public RentManager(BookRentService bookRentService, RentRequestService rentRequestService, BookService bookService, CopyService copyService, EmployeeService employeeService) {
@@ -48,19 +47,18 @@ public class RentManager {
 
 
     @Transactional
-    public String insertBookRent(BookRentDTO bookRentDTO) throws ValidationException, ParseException {
-        Book foundBook = ProjectModelMapper.convertDTOtoBook(bookService.findBookById(bookRentDTO.getBookId()));
-        Employee foundEmployee = ProjectModelMapper.convertDTOtoEmployee(employeeService.findEmployeeByID(bookRentDTO.getEmployeeId()));
-        List<CopyDTO> foundAvailableCopies = copyService.findAvailableCopiesForBook(foundBook.getId());
+    public String insertBookRent(int employeeId, int bookId) throws ValidationException, ParseException {
+        Book foundBook = bookService.findBookById(bookId);
+        Employee foundEmployee = employeeService.findEmployeeByID(employeeId);
+        List<Copy> foundAvailableCopies = copyService.findAvailableCopiesForBook(foundBook.getId());
         if (foundAvailableCopies.isEmpty()) {
-            System.out.println("No available copy for this book found!");
-            RentRequestDTO rentRequestToInsert = new RentRequestDTO(bookRentDTO.getEmployeeId(), bookRentDTO.getBookId());
-            rentRequestService.insertRentRequest(rentRequestToInsert);
+            log.info("No available copy for this book found!");
+            rentRequestService.insertRentRequest(employeeId, bookId);
             return "There are no available books! Rent request created!";
         }
-        Copy foundCopy = ProjectModelMapper.convertDTOtoCopy(foundAvailableCopies.get(0));
+        Copy foundCopy = foundAvailableCopies.get(0);
         foundCopy.setCopyStatus(CopyStatus.RENTED.toString().toLowerCase());
-        copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy));
+//        copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy)); asta nu ar mai trebui sa fie necesar
         Timestamp rentalDate = new Timestamp(System.currentTimeMillis());
         Timestamp returnDate = this.createTimestampReturnDate(rentalDate);
         BookRent bookRentToInsert = new BookRent(0, rentalDate, returnDate, BookRentStatus.ON_GOING.toString().toLowerCase(), 0.0, foundEmployee, foundCopy, foundBook);
@@ -90,13 +88,13 @@ public class RentManager {
         if (!requestsFoundForThisBook.isEmpty()) {
             RentRequest selectedRequest = requestsFoundForThisBook.get(0);
             foundCopy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
-            copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy));
+//            copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy)); asta nu ar mai trebui sa fie necesar
             selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
             rentRequestService.sendEmail(selectedRequest);//here, the email is sent
         } else {
             foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
-            copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy));
+//            copyService.updateCopy(ProjectModelMapper.convertCopyToDTO(foundCopy)); asta nu ar mai trebui sa fie necesar
         }
     }
 
@@ -106,10 +104,10 @@ public class RentManager {
         if (null == foundRentRequest) {
             throw new ValidationException("Rent request with given id does not exist!");
         }
-        CopyDTO copyDTO = copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
-        copyDTO.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
-        copyService.updateCopy(copyDTO);
-        insertBookRent(new BookRentDTO(0, foundRentRequest.getEmployee().getId(), foundRentRequest.getBook().getId()));
+        Copy copy = copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
+        copy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+//        copyService.updateCopy(copy);asta nu ar mai trebui sa fie necesar
+        insertBookRent(foundRentRequest.getEmployee().getId(), foundRentRequest.getBook().getId());
         foundRentRequest.setRentrequestStatus(RentRequestStatus.GRANTED.toString().toLowerCase());
         rentRequestService.acceptRentRequest(foundRentRequest);
     }
@@ -121,17 +119,17 @@ public class RentManager {
             throw new ValidationException("Rent request with given id does not exist!");
         }
         List<RentRequest> requestsFoundForThisBook = rentRequestService.findWaitingAvailableCopiesRequests(foundRentRequest.getBook().getId());
-        CopyDTO foundCopy = copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
+        Copy foundCopy = copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
         if (!requestsFoundForThisBook.isEmpty()) {
             RentRequest selectedRequest = requestsFoundForThisBook.get(0);
             foundCopy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
-            copyService.updateCopy(foundCopy);
+//            copyService.updateCopy(foundCopy); nu ar mai trebui sa fie necesar
             selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
             rentRequestService.sendEmail(selectedRequest);//here, the email is sent
         } else {
             foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
-            copyService.updateCopy(foundCopy);
+//            copyService.updateCopy(foundCopy);
         }
         foundRentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
         rentRequestService.declineRentRequest(foundRentRequest);

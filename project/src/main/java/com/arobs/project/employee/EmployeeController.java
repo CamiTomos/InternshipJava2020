@@ -2,12 +2,16 @@ package com.arobs.project.employee;
 
 import com.arobs.project.dtos.EmployeeDTO;
 import com.arobs.project.exception.ValidationException;
+import com.arobs.project.mappers.ProjectModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/library-app")
@@ -23,13 +27,18 @@ public class EmployeeController {
     @GetMapping(value = "/employees")
     public ResponseEntity<?> handleFindAllEmployees() {
         log.info("Employees found!");
-        return new ResponseEntity<>(service.findAllEmployees(), HttpStatus.OK);
+        List<EmployeeDTO> foundEmployees = service.findAllEmployees()
+                .stream()
+                .map(ProjectModelMapper::convertEmployeeToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(foundEmployees, HttpStatus.OK);
     }
 
     @PostMapping(value = "/employees")
     public ResponseEntity<?> handleInsertEmployee(@RequestBody EmployeeDTO employeeDTO) {
         log.info("Employee inserted!");
-        return new ResponseEntity<>(service.insertEmployee(employeeDTO), HttpStatus.OK);
+        Employee employeeToInsert = ProjectModelMapper.convertDTOtoEmployee(employeeDTO);
+        return new ResponseEntity<>(ProjectModelMapper.convertEmployeeToDTO(service.insertEmployee(employeeToInsert)), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/employees/{id}")
@@ -45,20 +54,23 @@ public class EmployeeController {
 
     @PutMapping(value = "/employees")
     public ResponseEntity<?> handleUpdateEmployee(@RequestBody EmployeeDTO employeeDTO) {
-        EmployeeDTO updatedEmployee = service.updateEmployee(employeeDTO);
-        if (null == updatedEmployee) {
-            log.error("The given employee does not exist!");
-            return new ResponseEntity<>("The given employee does not exist!", HttpStatus.NOT_FOUND);
+        try {
+            Employee employeeToBeUpdated = ProjectModelMapper.convertDTOtoEmployee(employeeDTO);
+            Employee updatedEmployee = service.updateEmployee(employeeToBeUpdated);
+            log.info("Employee updated!");
+            return new ResponseEntity<>(ProjectModelMapper.convertEmployeeToDTO(updatedEmployee), HttpStatus.OK);
+        } catch (ValidationException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }
-        log.info("Employee updated!");
-        return new ResponseEntity<>(updatedEmployee, HttpStatus.OK);
     }
 
     @GetMapping(value = "/employees/{id}")
     public ResponseEntity<?> handleFindEmployeeById(@PathVariable int id) {
         try {
             log.info("Employee found!");
-            return new ResponseEntity<>(service.findEmployeeByID(id), HttpStatus.OK);
+            EmployeeDTO foundEmployee = ProjectModelMapper.convertEmployeeToDTO(service.findEmployeeByID(id));
+            return new ResponseEntity<>(foundEmployee, HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);

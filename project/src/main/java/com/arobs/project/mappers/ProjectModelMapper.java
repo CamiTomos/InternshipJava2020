@@ -51,7 +51,7 @@ public class ProjectModelMapper {
         return modelMapper.map(bookRequestDTO, BookRequest.class);
     }
 
-    public static BookRentDTO convertBookRentToDTO(BookRent bookRent) {
-        return new BookRentDTO(bookRent.getId());
-    }
+//    public static BookRentDTO convertBookRentToDTO(BookRent bookRent) {
+//        return new BookRentDTO(bookRent.getId());
+//    }
 }

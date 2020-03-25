@@ -2,12 +2,16 @@ package com.arobs.project.copy;
 
 import com.arobs.project.dtos.CopyDTO;
 import com.arobs.project.exception.ValidationException;
+import com.arobs.project.mappers.ProjectModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController("copyController")
 @RequestMapping("/library-app")
@@ -23,14 +27,19 @@ public class CopyController {
     @GetMapping(value = "/copies")
     public ResponseEntity<?> handleFindAllCopies() {
         log.info("Copies found successfully!");
-        return new ResponseEntity<>(copyService.findAllCopies(), HttpStatus.OK);
+        List<CopyDTO> foundCopies = copyService.findAllCopies()
+                .stream()
+                .map(ProjectModelMapper::convertCopyToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(foundCopies, HttpStatus.OK);
     }
 
     @GetMapping(value = "/copies/{id}")
     public ResponseEntity<?> handleFindCopyById(@PathVariable int id) {
         try {
             log.info("Copy found!");
-            return new ResponseEntity<>(copyService.findCopyById(id), HttpStatus.OK);
+            CopyDTO foundCopy = ProjectModelMapper.convertCopyToDTO(copyService.findCopyById(id));
+            return new ResponseEntity<>(foundCopy, HttpStatus.OK);
         } catch (ValidationException ex) {
             log.info(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
@@ -41,7 +50,8 @@ public class CopyController {
     public ResponseEntity<?> handleInsertCopy(@RequestBody CopyDTO copyDTO) {
         try {
             log.info("Copy inserted!");
-            return new ResponseEntity<>(copyService.insertCopy(copyDTO), HttpStatus.OK);
+            Copy copyToInsert = ProjectModelMapper.convertDTOtoCopy(copyDTO);
+            return new ResponseEntity<>(ProjectModelMapper.convertCopyToDTO(copyService.insertCopy(copyToInsert)), HttpStatus.OK);
         } catch (ValidationException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -52,7 +62,8 @@ public class CopyController {
     public ResponseEntity<?> handleUpdateCopy(@RequestBody CopyDTO copyDTO) {
         try {
             log.info("Copy updated!");
-            return new ResponseEntity<>(copyService.updateCopy(copyDTO), HttpStatus.OK);
+            Copy copyToUpdate = ProjectModelMapper.convertDTOtoCopy(copyDTO);
+            return new ResponseEntity<>(ProjectModelMapper.convertCopyToDTO(copyService.updateCopy(copyToUpdate)), HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);

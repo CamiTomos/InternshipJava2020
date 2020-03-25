@@ -2,6 +2,7 @@ package com.arobs.project.book;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,8 @@ public class BookHibernateRepository {
         log.info("Insert book...");
         Session session = sessionFactory.getCurrentSession();
         book.setBookAddedDate(new Timestamp(System.currentTimeMillis()));
-        session.save(book);
+        int id = (int) session.save(book);
+        book.setId(id);
         return book;
     }
 
@@ -38,7 +40,14 @@ public class BookHibernateRepository {
     public Book findBookById(int id) {
         log.info("Find book by id...");
         Session session = sessionFactory.getCurrentSession();
-        return session.get(Book.class, id);
+        String hqlFind = "select distinct b from Book b join fetch b.tags where b.id = :id";
+        Query queryFind = session.createQuery(hqlFind);
+        queryFind.setParameter("id", id);
+        List<Book> foundBooks = queryFind.getResultList();
+        if (foundBooks.isEmpty()) {
+            return null;
+        }
+        return foundBooks.get(0);
     }
 
     public Book updateBook(Book book) {
@@ -55,6 +64,6 @@ public class BookHibernateRepository {
     public List<Book> findAllBooks() {
         log.info("Find all books...");
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("from Book", Book.class).getResultList();
+        return session.createQuery("select distinct b from Book b join fetch b.tags", Book.class).getResultList();
     }
 }

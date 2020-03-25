@@ -23,7 +23,8 @@ public class TagHibernateRepository {
 
     public Tag insertTag(Tag tag) {
         Session session = sessionFactory.getCurrentSession();
-        session.save(tag);
+        int id = (int) session.save(tag);
+        tag.setId(id);
         return tag;
     }
 

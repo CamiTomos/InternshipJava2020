@@ -2,12 +2,16 @@ package com.arobs.project.book;
 
 import com.arobs.project.dtos.BookDTO;
 import com.arobs.project.exception.ValidationException;
+import com.arobs.project.mappers.ProjectModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/library-app")
@@ -23,14 +27,19 @@ public class BookController {
     @GetMapping(value = "/books", produces = "application/json")
     public ResponseEntity<?> handleFindAllBooks() {
         log.info("BookController: get all books...");
-        return new ResponseEntity<>(bookService.findAllBooks(), HttpStatus.OK);
+        List<BookDTO> foundBooks = bookService.findAllBooks()
+                .stream()
+                .map(ProjectModelMapper::convertBookToDTO)
+                .collect(Collectors.toList());
+        return new ResponseEntity<>(foundBooks, HttpStatus.OK);
     }
 
     @GetMapping(value = "/books/{id}")
     public ResponseEntity<?> handleFindBookById(@PathVariable int id) {
         try {
             log.info("Book successfully found!");
-            return new ResponseEntity<>(bookService.findBookById(id), HttpStatus.OK);
+            BookDTO foundBook = ProjectModelMapper.convertBookToDTO(bookService.findBookById(id));
+            return new ResponseEntity<>(foundBook, HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error("Book could not be found!");
             return new ResponseEntity<>("Book with given id does not exist!", HttpStatus.NOT_FOUND);
@@ -40,18 +49,21 @@ public class BookController {
     @PostMapping(value = "/books", produces = "application/json")
     public ResponseEntity<?> handleInsertBook(@RequestBody BookDTO bookDTO) {
         log.info("Book inserted!");
-        return new ResponseEntity<>(bookService.insertBook(bookDTO), HttpStatus.OK);
+        Book book = ProjectModelMapper.convertDTOtoBook(bookDTO);
+        return new ResponseEntity<>(ProjectModelMapper.convertBookToDTO(bookService.insertBook(book)), HttpStatus.OK);
     }
 
     @PutMapping(value = "/books")
     public ResponseEntity<?> handleUpdateBook(@RequestBody BookDTO bookDTO) {
-        BookDTO updatedBook = bookService.updateBook(bookDTO);
-        if (null != updatedBook) {
+        try {
+            Book mappedBook = ProjectModelMapper.convertDTOtoBook(bookDTO);
+            Book updatedBook = bookService.updateBook(mappedBook);
             log.info("Book successfully updated!");
-            return new ResponseEntity<>(updatedBook, HttpStatus.OK);
+            return new ResponseEntity<>(ProjectModelMapper.convertBookToDTO(updatedBook), HttpStatus.OK);
+        } catch (ValidationException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
         }
-        log.error("Book could not be updated!");
-        return new ResponseEntity<>("Book can not be updated!", HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/books/{id}")
