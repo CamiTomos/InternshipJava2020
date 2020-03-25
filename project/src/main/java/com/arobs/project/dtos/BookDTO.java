@@ -1,15 +1,18 @@
 package com.arobs.project.dtos;
 
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
 public class BookDTO {
     private int id;
+    @NotNull
     private String bookTitle;
+    @NotNull
     private String bookAuthor;
+    @NotNull
     private String bookDescription;
-    //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private Set<TagDTO> tags = new HashSet<>();
 
     public BookDTO() {
@@ -62,8 +65,6 @@ public class BookDTO {
         this.bookDescription = bookDescription;
     }
 
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-
     public Set<TagDTO> getTags() {
         return tags;
     }
@@ -78,8 +79,7 @@ public class BookDTO {
                 "id=" + id +
                 "bookTitle='" + bookTitle + '\'' +
                 ", bookAuthor='" + bookAuthor + '\'' +
-                ", bookDescription='" + bookDescription + '\'' +
-//                ", bookAddedDate=" + bookAddedDate +
+                ", bookDescription='" + bookDescription +
                 '}';
     }
 

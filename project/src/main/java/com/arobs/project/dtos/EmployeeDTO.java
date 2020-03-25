@@ -1,12 +1,17 @@
 package com.arobs.project.dtos;
 
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 public class EmployeeDTO {
     private int id;
+    @NotNull
     private String employeeName;
+    @NotNull
     private String employeeRole;
+    @NotNull
     private String employeePassword;
+    @NotNull
     private String employeeEmail;
 
     public EmployeeDTO() {

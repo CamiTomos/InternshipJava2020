@@ -1,10 +1,11 @@
 package com.arobs.project.dtos;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import javax.validation.constraints.NotNull;
 
 //@JsonIgnoreProperties(value = "id", allowGetters = true)
 public class TagDTO {
     private int id;
+    @NotNull
     private String tagDescription;
 
     public TagDTO() {

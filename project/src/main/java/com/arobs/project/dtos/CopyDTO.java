@@ -1,9 +1,14 @@
 package com.arobs.project.dtos;
 
+import javax.validation.constraints.NotNull;
+
 public class CopyDTO {
     private int id;
+    @NotNull
     private boolean copyFlag;
+    @NotNull
     private String copyStatus;
+    @NotNull
     private int bookId;
 
     public CopyDTO() {

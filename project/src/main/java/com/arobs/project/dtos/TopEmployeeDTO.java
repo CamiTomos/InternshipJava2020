@@ -1,7 +1,11 @@
 package com.arobs.project.dtos;
 
+import javax.validation.constraints.NotNull;
+
 public class TopEmployeeDTO {
+    @NotNull
     private String employeeName;
+    @NotNull
     private long numberOfBooksRead;
 
     public TopEmployeeDTO() {

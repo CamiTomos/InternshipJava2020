@@ -9,10 +9,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
+@Validated
 @RestController("bookRentController")
 @RequestMapping("/library-app")
 public class BookRentController {
@@ -26,18 +29,21 @@ public class BookRentController {
 
 
     @PostMapping(value = "/bookRents")
-    public ResponseEntity<?> handleInsertBookRent(@RequestBody BookRentDTO bookRentDTO) {
+    public ResponseEntity<?> handleInsertBookRent(@Valid @RequestBody BookRentDTO bookRentDTO) {
         try {
             log.info("Book rent inserted!");
-            return new ResponseEntity<>(rentService.insertBookRent(bookRentDTO.getEmployeeId(),bookRentDTO.getBookId()), HttpStatus.OK);
+            return new ResponseEntity<>(rentService.insertBookRent(bookRentDTO.getEmployeeId(), bookRentDTO.getBookId()), HttpStatus.OK);
         } catch (ValidationException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = "/bookRents/extend/{id}")
-    public ResponseEntity<?> handleExtendDeadline(@PathVariable int id) {
+    public ResponseEntity<?> handleExtendDeadline(@NotBlank @PathVariable int id) {
         try {
             log.info("Deadline extended!");
             rentService.extendDeadlineBookRent(id);
@@ -45,11 +51,14 @@ public class BookRentController {
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = "/bookRents/return/{id}/{grade}")
-    public ResponseEntity<?> handleReturnBook(@PathVariable int id, @PathVariable double grade) {
+    public ResponseEntity<?> handleReturnBook(@NotBlank @PathVariable int id, @NotBlank @PathVariable double grade) {
         if (grade < 1 || grade > 5) {
             log.error("Grade must be between 1 and 5!");
             return new ResponseEntity<>("Grade must be between 1 and 5!", HttpStatus.NOT_ACCEPTABLE);
@@ -61,6 +70,9 @@ public class BookRentController {
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

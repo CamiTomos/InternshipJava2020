@@ -8,11 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController("copyController")
 @RequestMapping("/library-app")
 public class CopyController {
@@ -35,7 +39,7 @@ public class CopyController {
     }
 
     @GetMapping(value = "/copies/{id}")
-    public ResponseEntity<?> handleFindCopyById(@PathVariable int id) {
+    public ResponseEntity<?> handleFindCopyById(@NotBlank @PathVariable int id) {
         try {
             log.info("Copy found!");
             CopyDTO foundCopy = ProjectModelMapper.convertCopyToDTO(copyService.findCopyById(id));
@@ -43,11 +47,14 @@ public class CopyController {
         } catch (ValidationException ex) {
             log.info(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PostMapping(value = "/copies")
-    public ResponseEntity<?> handleInsertCopy(@RequestBody CopyDTO copyDTO) {
+    public ResponseEntity<?> handleInsertCopy(@Valid @RequestBody CopyDTO copyDTO) {
         try {
             log.info("Copy inserted!");
             Copy copyToInsert = ProjectModelMapper.convertDTOtoCopy(copyDTO);
@@ -55,11 +62,14 @@ public class CopyController {
         } catch (ValidationException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = "/copies")
-    public ResponseEntity<?> handleUpdateCopy(@RequestBody CopyDTO copyDTO) {
+    public ResponseEntity<?> handleUpdateCopy(@Valid @RequestBody CopyDTO copyDTO) {
         try {
             log.info("Copy updated!");
             Copy copyToUpdate = ProjectModelMapper.convertDTOtoCopy(copyDTO);
@@ -67,11 +77,14 @@ public class CopyController {
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping(value = "/copies/{id}")
-    public ResponseEntity<?> handleDeleteCopy(@PathVariable int id) {
+    public ResponseEntity<?> handleDeleteCopy(@NotBlank @PathVariable int id) {
         boolean isCopyDeleted = copyService.deleteCopy(id);
         if (isCopyDeleted) {
             log.info("Copy deleted successfully!");

@@ -1,14 +1,24 @@
 package com.arobs.project.dtos;
 
+import javax.validation.constraints.NotNull;
+
 public class BookRequestDTO {
     private int id;
+    @NotNull
     private String bookrequestTitle;
+    @NotNull
     private String bookrequestAuthor;
+    @NotNull
     private String bookrequestPublishingCompany;
+    @NotNull
     private String bookrequestLink;
+    @NotNull
     private int bookrequestCopiesNeeded;
+    @NotNull
     private double bookrequestTotalCost;
+    @NotNull
     private String bookrequestStatus;
+    @NotNull
     private int employeeId;
 
     public BookRequestDTO() {

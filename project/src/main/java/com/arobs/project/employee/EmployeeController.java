@@ -8,11 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequestMapping("/library-app")
 public class EmployeeController {
@@ -35,14 +39,14 @@ public class EmployeeController {
     }
 
     @PostMapping(value = "/employees")
-    public ResponseEntity<?> handleInsertEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<?> handleInsertEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
         log.info("Employee inserted!");
         Employee employeeToInsert = ProjectModelMapper.convertDTOtoEmployee(employeeDTO);
         return new ResponseEntity<>(ProjectModelMapper.convertEmployeeToDTO(service.insertEmployee(employeeToInsert)), HttpStatus.OK);
     }
 
     @DeleteMapping(value = "/employees/{id}")
-    public ResponseEntity<String> handleDeleteEmployee(@PathVariable int id) {
+    public ResponseEntity<String> handleDeleteEmployee(@NotBlank @PathVariable int id) {
         if (service.deleteEmployee(id)) {
             log.info("Employee successfully deleted!");
             return new ResponseEntity<>("Employee successfully deleted!", HttpStatus.OK);
@@ -53,7 +57,7 @@ public class EmployeeController {
     }
 
     @PutMapping(value = "/employees")
-    public ResponseEntity<?> handleUpdateEmployee(@RequestBody EmployeeDTO employeeDTO) {
+    public ResponseEntity<?> handleUpdateEmployee(@Valid @RequestBody EmployeeDTO employeeDTO) {
         try {
             Employee employeeToBeUpdated = ProjectModelMapper.convertDTOtoEmployee(employeeDTO);
             Employee updatedEmployee = service.updateEmployee(employeeToBeUpdated);
@@ -62,11 +66,14 @@ public class EmployeeController {
         } catch (ValidationException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @GetMapping(value = "/employees/{id}")
-    public ResponseEntity<?> handleFindEmployeeById(@PathVariable int id) {
+    public ResponseEntity<?> handleFindEmployeeById(@NotBlank @PathVariable int id) {
         try {
             log.info("Employee found!");
             EmployeeDTO foundEmployee = ProjectModelMapper.convertEmployeeToDTO(service.findEmployeeByID(id));
@@ -74,6 +81,9 @@ public class EmployeeController {
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

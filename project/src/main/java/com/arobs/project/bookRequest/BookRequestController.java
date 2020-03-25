@@ -8,11 +8,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Validated
 @RestController
 @RequestMapping(value = "/library-app")
 public class BookRequestController {
@@ -35,7 +39,7 @@ public class BookRequestController {
     }
 
     @PostMapping(value = "/bookRequests")
-    public ResponseEntity<?> handleInsertBookRequest(@RequestBody BookRequestDTO bookRequestDTO) {
+    public ResponseEntity<?> handleInsertBookRequest(@Valid @RequestBody BookRequestDTO bookRequestDTO) {
         try {
             log.info("Book request inserted!");
             BookRequest bookRequestToInsert = ProjectModelMapper.convertDTOtoBookRequest(bookRequestDTO);
@@ -44,11 +48,14 @@ public class BookRequestController {
         } catch (ValidationException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PutMapping(value = "/bookRequests")
-    public ResponseEntity<?> handleUpdateBookRequest(@RequestBody BookRequestDTO bookRequestDTO) {
+    public ResponseEntity<?> handleUpdateBookRequest(@Valid @RequestBody BookRequestDTO bookRequestDTO) {
         try {
             BookRequest bookRequestToBeUpdated = ProjectModelMapper.convertDTOtoBookRequest(bookRequestDTO);
             BookRequestDTO updatedBookRequest = ProjectModelMapper.convertBookRequestToDTO(bookRequestService.updateBookRequest(bookRequestToBeUpdated));
@@ -57,11 +64,14 @@ public class BookRequestController {
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @DeleteMapping(value = "/bookRequest/{id}")
-    public ResponseEntity<?> handleDeleteBookRequest(@PathVariable int id) {
+    public ResponseEntity<?> handleDeleteBookRequest(@NotBlank @PathVariable int id) {
         boolean isBookDeleted = bookRequestService.deleteBookRequest(id);
         if (isBookDeleted) {
             log.info("Book was successfully deleted!");
@@ -72,7 +82,7 @@ public class BookRequestController {
     }
 
     @GetMapping(value = "/bookRequest/{id}")
-    public ResponseEntity<?> handleFindBookRequestById(@PathVariable int id) {
+    public ResponseEntity<?> handleFindBookRequestById(@NotBlank @PathVariable int id) {
         try {
             BookRequestDTO foundBook = ProjectModelMapper.convertBookRequestToDTO(bookRequestService.findBookRequestById(id));
             log.info("Book request found!");
@@ -80,7 +90,9 @@ public class BookRequestController {
         } catch (ValidationException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
-
+        } catch (Exception e) {
+            log.error("Server exception!");
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

@@ -1,6 +1,9 @@
 package com.arobs.project.dtos;
 
+import javax.validation.constraints.NotNull;
+
 public class LateReturnEmployeeDTO {
+    @NotNull
     private String employeeName;
 
     public LateReturnEmployeeDTO() {
