@@ -39,9 +39,9 @@ public class TagServiceImpl implements TagService {
     @Override
     @Transactional
     public TagDTO findTagByDescription(String description) {
-        Tag foundTag = hibernateRepository.getTagByDescription(description);
-        if (foundTag != null) {
-            return ProjectModelMapper.convertTagToDTO(foundTag);
+        List<Tag> foundTags = hibernateRepository.getTagsByDescription(description);
+        if (foundTags.size() == 1) {
+            return ProjectModelMapper.convertTagToDTO(foundTags.get(0));
         }
         return null;
     }

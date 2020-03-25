@@ -1,4 +1,4 @@
-package com.arobs.project.hibernateTest;
+package com.arobs.project.configurations;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.Metadata;

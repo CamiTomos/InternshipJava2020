@@ -1,9 +1,12 @@
 package com.arobs.project.bookRent;
 
 
+import com.arobs.project.book.BookHibernateRepository;
 import com.arobs.project.dtos.BookRentDTO;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.managers.RentManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +19,7 @@ import java.text.ParseException;
 public class BookRentController {
     private BookRentService bookRentService;
     private RentManager rentManager;
+    private final Logger log = LoggerFactory.getLogger(BookHibernateRepository.class);
 
     @Autowired
     public BookRentController(BookRentService bookRentService, RentManager rentManager) {

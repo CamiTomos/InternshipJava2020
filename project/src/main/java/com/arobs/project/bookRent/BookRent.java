@@ -148,8 +148,6 @@ public class BookRent implements Serializable {
                 ", bookrentReturnDate=" + bookrentReturnDate +
                 ", bookrentStatus='" + bookrentStatus + '\'' +
                 ", bookrentNote=" + bookrentNote +
-//                ", employee=" + employee +
-//                ", copy=" + copy +
                 '}';
     }
 }

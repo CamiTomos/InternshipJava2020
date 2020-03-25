@@ -54,7 +54,5 @@ public class StatisticsController {
     @GetMapping(value = "/statistics/lateReturns")
     public ResponseEntity<?> handleGetLateReturns() {
         return new ResponseEntity<>(statisticsService.getLateReturnEmployees(), HttpStatus.OK);
-
     }
-
 }

@@ -29,14 +29,17 @@ public class BookController {
     @GetMapping(value = "/books/{id}")
     public ResponseEntity<?> handleFindBookById(@PathVariable int id) {
         try {
-            return new ResponseEntity<>(bookService.findById(id), HttpStatus.OK);
+            log.info("Book successfully found!");
+            return new ResponseEntity<>(bookService.findBookById(id), HttpStatus.OK);
         } catch (ValidationException ex) {
+            log.error("Book could not be found!");
             return new ResponseEntity<>("Book with given id does not exist!", HttpStatus.NOT_FOUND);
         }
     }
 
     @PostMapping(value = "/books", produces = "application/json")
     public ResponseEntity<?> handleInsertBook(@RequestBody BookDTO bookDTO) {
+        log.info("Book inserted!");
         return new ResponseEntity<>(bookService.insertBook(bookDTO), HttpStatus.OK);
     }
 
@@ -44,16 +47,20 @@ public class BookController {
     public ResponseEntity<?> handleUpdateBook(@RequestBody BookDTO bookDTO) {
         BookDTO updatedBook = bookService.updateBook(bookDTO);
         if (null != updatedBook) {
+            log.info("Book successfully updated!");
             return new ResponseEntity<>(updatedBook, HttpStatus.OK);
         }
+        log.error("Book could not be updated!");
         return new ResponseEntity<>("Book can not be updated!", HttpStatus.BAD_REQUEST);
     }
 
     @DeleteMapping(value = "/books/{id}")
     public ResponseEntity<String> handleDeleteBook(@PathVariable int id) {
         if (bookService.deleteBook(id)) {
+            log.info("Book deleted!");
             return new ResponseEntity<>("Book was deleted successfully!", HttpStatus.OK);
         } else {
+            log.error("Book could not be deleted!");
             return new ResponseEntity<>("Book was not deleted!", HttpStatus.BAD_REQUEST);
         }
     }

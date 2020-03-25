@@ -61,7 +61,7 @@ public class BookServiceTest {
     void whenFindById_givenId_returnBookDTO() throws ValidationException {
         Book foundBook = new Book(1, "title", "author", "description");
         when(bookHibernateRepository.findBookById(foundBook.getId())).thenReturn(foundBook);
-        BookDTO book = bookService.findById(foundBook.getId());
+        BookDTO book = bookService.findBookById(foundBook.getId());
         assertEquals(ProjectModelMapper.convertBookToDTO(foundBook), book);
     }
 }

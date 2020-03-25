@@ -49,7 +49,7 @@ public class RentManager {
 
     @Transactional
     public String insertBookRent(BookRentDTO bookRentDTO) throws ValidationException, ParseException {
-        Book foundBook = ProjectModelMapper.convertDTOtoBook(bookService.findById(bookRentDTO.getBookId()));
+        Book foundBook = ProjectModelMapper.convertDTOtoBook(bookService.findBookById(bookRentDTO.getBookId()));
         Employee foundEmployee = ProjectModelMapper.convertDTOtoEmployee(employeeService.findEmployeeByID(bookRentDTO.getEmployeeId()));
         List<CopyDTO> foundAvailableCopies = copyService.findAvailableCopiesForBook(foundBook.getId());
         if (foundAvailableCopies.isEmpty()) {
@@ -106,16 +106,16 @@ public class RentManager {
         if (null == foundRentRequest) {
             throw new ValidationException("Rent request with given id does not exist!");
         }
-        CopyDTO copyDTO=copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
+        CopyDTO copyDTO = copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
         copyDTO.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
         copyService.updateCopy(copyDTO);
-        insertBookRent(new BookRentDTO(0,foundRentRequest.getEmployee().getId(),foundRentRequest.getBook().getId()));
+        insertBookRent(new BookRentDTO(0, foundRentRequest.getEmployee().getId(), foundRentRequest.getBook().getId()));
         foundRentRequest.setRentrequestStatus(RentRequestStatus.GRANTED.toString().toLowerCase());
         rentRequestService.acceptRentRequest(foundRentRequest);
     }
 
     @Transactional
-    public void declineRentRequest(int id) throws ValidationException, ParseException {
+    public void declineRentRequest(int id) throws ValidationException {
         RentRequest foundRentRequest = rentRequestService.getRentRequestById(id);
         if (null == foundRentRequest) {
             throw new ValidationException("Rent request with given id does not exist!");
@@ -133,7 +133,6 @@ public class RentManager {
             foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
             copyService.updateCopy(foundCopy);
         }
-
         foundRentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
         rentRequestService.declineRentRequest(foundRentRequest);
     }

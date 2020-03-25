@@ -71,8 +71,7 @@ public class Tag implements Serializable {
     public String toString() {
         return "Tag{" +
                 "id=" + id +
-                ", tagDescription='" + tagDescription + '\'' +
-//                ", books=" + books +
+                ", tagDescription='" + tagDescription +
                 '}';
     }
 }

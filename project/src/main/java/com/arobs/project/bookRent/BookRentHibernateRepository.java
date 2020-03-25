@@ -1,8 +1,11 @@
 package com.arobs.project.bookRent;
 
+import com.arobs.project.book.BookHibernateRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +15,7 @@ import java.util.List;
 @Repository("bookRentHibernateRepository")
 public class BookRentHibernateRepository {
     private SessionFactory sessionFactory;
+    private final Logger log = LoggerFactory.getLogger(BookHibernateRepository.class);
 
     @Autowired
     public BookRentHibernateRepository(SessionFactory sessionFactory) {
@@ -45,8 +49,8 @@ public class BookRentHibernateRepository {
         String hql = "select b from BookRent b where b.bookrentReturnDate< :currentTime and b.bookrentStatus='on_going'";
         Query selectQuery = session.createQuery(hql);
         selectQuery.setParameter("currentTime", currentTime);
-        List lateRentals = selectQuery.getResultList();
-        System.out.println("Lista are atatea elemente: " + lateRentals.size());
+        List<BookRent> lateRentals = selectQuery.getResultList();
+        log.info("There are {} late rentals", lateRentals.size());
         return lateRentals;
     }
 }

@@ -30,16 +30,16 @@ public class TagController {
     public ResponseEntity<?> handleFindByDescription(@RequestParam(value = "description") String description) {
         TagDTO foundTag = service.findTagByDescription(description);
         if (foundTag == null) {
-            return new ResponseEntity<>("Sorry! There is no tag with given description!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Sorry! There is no tag with given description!", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(foundTag, HttpStatus.OK);
     }
 
     @GetMapping(value = "/tags/{id}")
-    public ResponseEntity<?> handleFindById(@PathVariable int id) {
+    public ResponseEntity<?> handleFindTagById(@PathVariable int id) {
         TagDTO foundTag = service.findTagById(id);
         if (foundTag == null) {
-            return new ResponseEntity<>("Sorry! There is no tag with given id!", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("Sorry! There is no tag with given id!", HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<>(foundTag, HttpStatus.OK);
     }
@@ -61,6 +61,4 @@ public class TagController {
         }
         return new ResponseEntity<>("Tag successfully deleted!", HttpStatus.OK);
     }
-
-
 }

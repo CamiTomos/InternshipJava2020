@@ -45,7 +45,6 @@ public class RentRequestScheduledService {
     }
 
     @Async
-//    @Scheduled(fixedRate = 30000)//for testing, 30 seconds
     @Scheduled(fixedRate = 60000 * 60)//1 hour
     @Transactional
     public void checkEmailConfirmation() {
@@ -64,7 +63,6 @@ public class RentRequestScheduledService {
                         Book book = rentRequestToBeUpdated.getBook();
                         List<CopyDTO> pendingCopies = copyService.findPendingCopiesForBook(book.getId());
                         CopyDTO copyToBeUpdated = pendingCopies.get(0);
-                        //notify next employee
                         try {
                             notifyNextEmployee(book.getId(), copyToBeUpdated);
                         } catch (ValidationException e) {
@@ -77,7 +75,6 @@ public class RentRequestScheduledService {
 
     private void notifyNextEmployee(int bookId, CopyDTO copyDTO) throws ValidationException {
         List<RentRequest> requestsFoundForThisBook = rentRequestService.findWaitingAvailableCopiesRequests(bookId);
-//        Copy foundCopy = foundBookRent.getCopy();
         if (!requestsFoundForThisBook.isEmpty()) {
             RentRequest selectedRequest = requestsFoundForThisBook.get(0);
             copyDTO.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
@@ -89,6 +86,5 @@ public class RentRequestScheduledService {
             copyDTO.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
             copyService.updateCopy(copyDTO);
         }
-
     }
 }

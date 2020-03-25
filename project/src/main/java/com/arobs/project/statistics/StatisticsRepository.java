@@ -25,8 +25,8 @@ public class StatisticsRepository {
         Session session = sessionFactory.getCurrentSession();
         String hqlGetTop = "SELECT new com.arobs.project.dtos.TopBookDTO(r.book.bookTitle, count(*)) "
                 + "from BookRent r inner join r.book "
-                + "where r.bookrentRentalDate between :begin and :end"
-                + " group by r.book.bookTitle "
+                + "where r.bookrentRentalDate between :begin and :end "
+                + "group by r.book.bookTitle "
                 + "order by count(*) desc";
         Query query = session.createQuery(hqlGetTop);
         query.setParameter("begin", beginningDate);
@@ -55,7 +55,6 @@ public class StatisticsRepository {
         String hqlGetTop = "SELECT new com.arobs.project.dtos.LateReturnEmployeeDTO(r.employee.employeeName) "
                 + "from BookRent r inner join r.employee "
                 + "where r.bookrentStatus='late'";
-        Query query = session.createQuery(hqlGetTop);
-        return query.list();
+        return session.createQuery(hqlGetTop).list();
     }
 }

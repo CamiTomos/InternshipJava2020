@@ -15,5 +15,5 @@ public interface BookService {
 
     BookDTO updateBook(BookDTO bookDTO);
 
-    BookDTO findById(int id) throws ValidationException;
+    BookDTO findBookById(int id) throws ValidationException;
 }

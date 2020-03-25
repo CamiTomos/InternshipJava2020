@@ -42,7 +42,7 @@ public class CopyServiceImpl implements CopyService {
         if (copyStatus.compareTo(String.valueOf(CopyStatus.AVAILABLE)) != 0) {
             throw new ValidationException("Status must be available!");
         }
-        BookDTO foundBook = bookService.findById(copyDTO.getBookId());
+        BookDTO foundBook = bookService.findBookById(copyDTO.getBookId());
         if (foundBook == null) {
             throw new ValidationException("The book with given id does not exist!");
         }
@@ -73,7 +73,7 @@ public class CopyServiceImpl implements CopyService {
         if (hibernateRepository.findCopyById(copyDTO.getId()) == null) {
             throw new ValidationException("Copy with given id does not exist!");
         }
-        if (bookService.findById(copyDTO.getBookId()) == null) {
+        if (bookService.findBookById(copyDTO.getBookId()) == null) {
             throw new ValidationException("Book with given id does not exist!");
         }
         return ProjectModelMapper.convertCopyToDTO(hibernateRepository.updateCopy(ProjectModelMapper.convertDTOtoCopy(copyDTO)));

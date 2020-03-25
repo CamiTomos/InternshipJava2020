@@ -8,10 +8,7 @@ import com.arobs.project.dtos.*;
 import com.arobs.project.employee.Employee;
 import com.arobs.project.tag.Tag;
 
-import java.text.SimpleDateFormat;
-
 public class ProjectModelMapper {
-    private static SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private static org.modelmapper.ModelMapper modelMapper = new org.modelmapper.ModelMapper();
 
     public static BookDTO convertBookToDTO(Book book) {
@@ -54,16 +51,6 @@ public class ProjectModelMapper {
         return modelMapper.map(bookRequestDTO, BookRequest.class);
     }
 
-    //    public static BookRent convertDTOtoBookRent(BookRentDTO bookRentDTO) throws ParseException {
-//        return new BookRent(bookRentDTO.getId()
-//                new Timestamp(myFormat.parse(bookRentDTO.getBookrentRentalDate()).getTime()),
-//                new Timestamp(myFormat.parse(bookRentDTO.getBookrentReturnDate()).getTime()),
-//                bookRentDTO.getBookrentStatus(),
-//                bookRentDTO.getBookrentNote()
-//                bookRentDTO.getEmployee(),
-//                bookRentDTO.getCopy()
-//                );
-//    }
     public static BookRentDTO convertBookRentToDTO(BookRent bookRent) {
         return new BookRentDTO(bookRent.getId());
     }

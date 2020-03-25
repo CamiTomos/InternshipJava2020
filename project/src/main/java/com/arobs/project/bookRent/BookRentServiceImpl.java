@@ -1,6 +1,5 @@
 package com.arobs.project.bookRent;
 
-import com.arobs.project.copy.CopyService;
 import com.arobs.project.dtos.BookRentDTO;
 import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.exception.ValidationException;
@@ -16,14 +15,11 @@ import java.util.Calendar;
 @Service("bookRentServiceImpl")
 @EnableTransactionManagement
 public class BookRentServiceImpl implements BookRentService {
-    //    private static SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private BookRentHibernateRepository bookRentRepository;
-    private CopyService copyService;
 
     @Autowired
-    public BookRentServiceImpl(BookRentHibernateRepository bookRentRepository, CopyService copyService) {
+    public BookRentServiceImpl(BookRentHibernateRepository bookRentRepository) {
         this.bookRentRepository = bookRentRepository;
-        this.copyService = copyService;
     }
 
     @Override
@@ -60,7 +56,7 @@ public class BookRentServiceImpl implements BookRentService {
 
     @Override
     @Transactional
-    public void returnBook(BookRent bookRent) throws ValidationException {
+    public void returnBook(BookRent bookRent) {
         bookRentRepository.updateBookRent(bookRent);
     }
 

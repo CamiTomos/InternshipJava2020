@@ -27,15 +27,11 @@ public class TagHibernateRepository {
         return tag;
     }
 
-    public Tag getTagByDescription(String description) {
+    public List<Tag> getTagsByDescription(String description) {
         Session session = sessionFactory.getCurrentSession();
-        List<Tag> tags = session.createQuery("from Tag T where T.tagDescription= :description")
+        return session.createQuery("from Tag T where T.tagDescription= :description")
                 .setParameter("description", description)
                 .getResultList();
-        if (tags.size() == 1) {
-            return tags.get(0);
-        }
-        return null;
     }
 
     public boolean deleteTag(Tag tag) {

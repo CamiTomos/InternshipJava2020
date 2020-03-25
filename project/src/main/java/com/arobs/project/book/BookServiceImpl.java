@@ -5,6 +5,8 @@ import com.arobs.project.dtos.TagDTO;
 import com.arobs.project.exception.ValidationException;
 import com.arobs.project.mappers.ProjectModelMapper;
 import com.arobs.project.tag.TagService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 public class BookServiceImpl implements BookService {
     private BookHibernateRepository bookRepository;
     private TagService tagService;
+    private final Logger log = LoggerFactory.getLogger(BookHibernateRepository.class);
 
     @Autowired
     public BookServiceImpl(BookHibernateRepository bookRepository, TagService tagService) {
@@ -29,6 +32,7 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public List<BookDTO> findAllBooks() {
+        log.info("Find all books...");
         return bookRepository.findAllBooks()
                 .stream()
                 .map(ProjectModelMapper::convertBookToDTO)
@@ -38,8 +42,17 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public BookDTO insertBook(BookDTO bookDTO) {
+        log.info("Insert book...");
         Set<TagDTO> tagDTOS = bookDTO.getTags();
-        for (TagDTO tagDTO : tagDTOS) {
+        insertNonexistentTags(tagDTOS);
+        Book book = ProjectModelMapper.convertDTOtoBook(bookDTO);
+        Book insertedBook = bookRepository.insertBook(book);
+        bookDTO.setId(insertedBook.getId());
+        return bookDTO;
+    }
+
+    private void insertNonexistentTags(Set<TagDTO> tagDTOS) {
+        tagDTOS.forEach(tagDTO -> {
             TagDTO foundTag = tagService.findTagByDescription(tagDTO.getTagDescription());
             if (null == foundTag) {
                 TagDTO createdTag = tagService.insertTag(tagDTO);
@@ -47,16 +60,13 @@ public class BookServiceImpl implements BookService {
             } else {
                 tagDTO.setId(foundTag.getId());
             }
-        }
-        Book book = ProjectModelMapper.convertDTOtoBook(bookDTO);
-        Book insertedBook = bookRepository.insertBook(book);
-        bookDTO.setId(insertedBook.getId());
-        return bookDTO;
+        });
     }
 
     @Override
     @Transactional
     public boolean deleteBook(int id) {
+        log.info("Delete book...");
         Book foundBook = bookRepository.findBookById(id);
         if (foundBook != null) {
             return bookRepository.deleteBook(foundBook);
@@ -67,18 +77,11 @@ public class BookServiceImpl implements BookService {
     @Override
     @Transactional
     public BookDTO updateBook(BookDTO bookDTO) {
+        log.info("Update book...");
         Book foundBook = bookRepository.findBookById(bookDTO.getId());
         if (foundBook != null) {
             Set<TagDTO> tagDTOS = bookDTO.getTags();
-            for (TagDTO tagDTO : tagDTOS) {
-                TagDTO foundTag = tagService.findTagByDescription(tagDTO.getTagDescription());
-                if (null == foundTag) {
-                    TagDTO createdTag = tagService.insertTag(tagDTO);
-                    tagDTO.setId(createdTag.getId());
-                } else {
-                    tagDTO.setId(foundTag.getId());
-                }
-            }
+            insertNonexistentTags(tagDTOS);
             return ProjectModelMapper.convertBookToDTO(bookRepository.updateBook(ProjectModelMapper.convertDTOtoBook(bookDTO)));
         }
         return null;
@@ -86,7 +89,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookDTO findById(int id) throws ValidationException {
+    public BookDTO findBookById(int id) throws ValidationException {
+        log.info("Find book by id...");
         Book foundBook = bookRepository.findBookById(id);
         if (foundBook == null) {
             throw new ValidationException("Book with given id does not exist!");
