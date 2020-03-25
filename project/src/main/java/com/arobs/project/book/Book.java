@@ -1,8 +1,8 @@
 package com.arobs.project.book;
 
-import com.arobs.project.bookRent.BookRent;
+import com.arobs.project.rent.bookRent.BookRent;
 import com.arobs.project.copy.Copy;
-import com.arobs.project.rentRequest.RentRequest;
+import com.arobs.project.rent.rentRequest.RentRequest;
 import com.arobs.project.tag.Tag;
 
 import javax.persistence.*;

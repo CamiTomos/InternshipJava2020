@@ -1,7 +1,7 @@
 package com.arobs.project.copy;
 
 import com.arobs.project.book.Book;
-import com.arobs.project.bookRent.BookRent;
+import com.arobs.project.rent.bookRent.BookRent;
 
 import javax.persistence.*;
 import java.io.Serializable;

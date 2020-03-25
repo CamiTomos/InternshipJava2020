@@ -1,7 +1,6 @@
 package com.arobs.project.mappers;
 
 import com.arobs.project.book.Book;
-import com.arobs.project.bookRent.BookRent;
 import com.arobs.project.bookRequest.BookRequest;
 import com.arobs.project.copy.Copy;
 import com.arobs.project.dtos.*;

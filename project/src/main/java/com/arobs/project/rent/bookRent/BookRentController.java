@@ -1,9 +1,9 @@
-package com.arobs.project.bookRent;
+package com.arobs.project.rent.bookRent;
 
 
 import com.arobs.project.dtos.BookRentDTO;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.managers.RentManager;
+import com.arobs.project.rent.RentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,27 +16,23 @@ import java.text.ParseException;
 @RestController("bookRentController")
 @RequestMapping("/library-app")
 public class BookRentController {
-    private BookRentService bookRentService;
-    private RentManager rentManager;
+    private final RentService rentService;
     private final Logger log = LoggerFactory.getLogger("FILE");
 
     @Autowired
-    public BookRentController(BookRentService bookRentService, RentManager rentManager) {
-        this.bookRentService = bookRentService;
-        this.rentManager = rentManager;
+    public BookRentController(RentService rentService) {
+        this.rentService = rentService;
     }
+
 
     @PostMapping(value = "/bookRents")
     public ResponseEntity<?> handleInsertBookRent(@RequestBody BookRentDTO bookRentDTO) {
         try {
             log.info("Book rent inserted!");
-            return new ResponseEntity<>(rentManager.insertBookRent(bookRentDTO.getEmployeeId(),bookRentDTO.getBookId()), HttpStatus.OK);
+            return new ResponseEntity<>(rentService.insertBookRent(bookRentDTO.getEmployeeId(),bookRentDTO.getBookId()), HttpStatus.OK);
         } catch (ValidationException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (ParseException e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>("Date does not respect the format!", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -44,7 +40,7 @@ public class BookRentController {
     public ResponseEntity<?> handleExtendDeadline(@PathVariable int id) {
         try {
             log.info("Deadline extended!");
-            bookRentService.extendDeadlineBookRent(id);
+            rentService.extendDeadlineBookRent(id);
             return new ResponseEntity<>("Return date extended successfully!", HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
@@ -60,7 +56,7 @@ public class BookRentController {
         }
         try {
             log.info("Book returned successfully!");
-            rentManager.returnBook(id, grade);
+            rentService.returnBook(id, grade);
             return new ResponseEntity<>("Book returned successfully!", HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error(ex.getMessage());

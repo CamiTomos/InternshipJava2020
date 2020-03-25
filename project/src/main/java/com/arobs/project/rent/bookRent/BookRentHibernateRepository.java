@@ -1,6 +1,5 @@
-package com.arobs.project.bookRent;
+package com.arobs.project.rent.bookRent;
 
-import com.arobs.project.book.BookHibernateRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;

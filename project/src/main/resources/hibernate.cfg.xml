@@ -28,11 +28,11 @@
 <!--        <property name="hibernate.dbcp.maxWaitMillis">-1</property>-->
 
 <!--        <mapping class="com.arobs.project.book.Book"/>-->
-<!--        <mapping class="com.arobs.project.bookRent.BookRent"/>-->
+<!--        <mapping class="com.arobs.project.rent.bookRent.BookRent"/>-->
 <!--        <mapping class="com.arobs.project.bookRequest.BookRequest"/>-->
 <!--        <mapping class="com.arobs.project.copy.Copy"/>-->
 <!--        <mapping class="com.arobs.project.employee.Employee"/>-->
-<!--        <mapping class="com.arobs.project.rentRequest.RentRequest"/>-->
+<!--        <mapping class="com.arobs.project.rent.rentRequest.RentRequest"/>-->
 <!--        <mapping class="com.arobs.project.tag.Tag"/>-->
 <!--    </session-factory>-->
 <!--</hibernate-configuration>-->

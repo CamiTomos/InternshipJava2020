@@ -1,4 +1,4 @@
-package com.arobs.project.rentRequest;
+package com.arobs.project.rent.rentRequest;
 
 import com.arobs.project.book.Book;
 import com.arobs.project.employee.Employee;

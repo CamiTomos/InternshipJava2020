@@ -1,4 +1,4 @@
-package com.arobs.project.bookRent;
+package com.arobs.project.rent.bookRent;
 
 import com.arobs.project.book.Book;
 import com.arobs.project.copy.Copy;

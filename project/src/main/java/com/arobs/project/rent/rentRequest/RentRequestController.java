@@ -1,9 +1,9 @@
-package com.arobs.project.rentRequest;
+package com.arobs.project.rent.rentRequest;
 
 
 import com.arobs.project.dtos.RentRequestDTO;
 import com.arobs.project.exception.ValidationException;
-import com.arobs.project.managers.RentManager;
+import com.arobs.project.rent.RentService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,26 +11,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-
 @RestController("rentRequestController")
 @RequestMapping("/library-app")
 public class RentRequestController {
-    private RentRequestService rentRequestService;
-    private RentManager rentManager;
+    private final RentService rentService;
     private final Logger log = LoggerFactory.getLogger("FILE");
 
     @Autowired
-    public RentRequestController(RentRequestService rentRequestService, RentManager rentManager) {
-        this.rentRequestService = rentRequestService;
-        this.rentManager = rentManager;
+    public RentRequestController(RentService rentService) {
+        this.rentService = rentService;
     }
 
     @PostMapping(value = "/rentRequests")
     public ResponseEntity<?> handleInsertRentRequest(@RequestBody RentRequestDTO rentRequestDTO) {
         try {
             log.info("Rent request successfully inserted!");
-            rentRequestService.insertRentRequest(rentRequestDTO.getEmployeeId(), rentRequestDTO.getBookId());
+            rentService.insertRentRequest(rentRequestDTO.getEmployeeId(), rentRequestDTO.getBookId());
             return new ResponseEntity<>("Rent request successfully inserted!", HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
@@ -42,14 +38,11 @@ public class RentRequestController {
     public ResponseEntity<?> handleAcceptRequest(@PathVariable int id) {
         try {
             log.info("Rent request successfully accepted!");
-            rentManager.acceptRentRequest(id);
+            rentService.acceptRentRequest(id);
             return new ResponseEntity<>("Rent request successfully accepted!", HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error(ex.getMessage());
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        } catch (ParseException e) {
-            log.error(e.getMessage());
-            return new ResponseEntity<>("Date can not be parsed!", HttpStatus.BAD_REQUEST);
         }
     }
 
@@ -57,7 +50,7 @@ public class RentRequestController {
     public ResponseEntity<?> handleDeclineRequest(@PathVariable int id) {
         try {
             log.info("Rent request successfully declined!");
-            rentManager.declineRentRequest(id);
+            rentService.declineRentRequest(id);
             return new ResponseEntity<>("Rent request successfully declined!", HttpStatus.OK);
         } catch (ValidationException ex) {
             log.error("Rent request successfully declined!");

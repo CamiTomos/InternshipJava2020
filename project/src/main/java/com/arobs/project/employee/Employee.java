@@ -1,8 +1,8 @@
 package com.arobs.project.employee;
 
-import com.arobs.project.bookRent.BookRent;
+import com.arobs.project.rent.bookRent.BookRent;
 import com.arobs.project.bookRequest.BookRequest;
-import com.arobs.project.rentRequest.RentRequest;
+import com.arobs.project.rent.rentRequest.RentRequest;
 
 import javax.persistence.*;
 import java.io.Serializable;

@@ -1,4 +1,4 @@
-package com.arobs.project.rentRequest;
+package com.arobs.project.rent.rentRequest;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
