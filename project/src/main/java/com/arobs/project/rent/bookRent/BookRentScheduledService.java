@@ -25,8 +25,7 @@ public class BookRentScheduledService {
     }
 
     @Async
-//    @Scheduled(fixedRate = 60000 * 60 * 24)// 1 day
-    @Scheduled(fixedRate = 30000)// 1 day
+    @Scheduled(fixedRate = 60000 * 60 * 24)// 1 day
     public void markRentalsLate() {
         log.info("Late rentals the time is now {}", dateFormat.format(new Date()));
         rentService.markRentalsLate();
