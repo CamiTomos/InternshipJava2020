@@ -36,8 +36,8 @@ public class BookRequestServiceImpl implements BookRequestService {
         if (null == employee) {
             throw new ValidationException("The given employee does not exist!");
         }
-        if (bookRequest.getBookrequestStatus().toUpperCase().compareTo(String.valueOf(BookRequestStatus.PENDING)) != 0) {
-            throw new ValidationException("Status must be pending!");
+        if (bookRequest.getBookrequestStatus().compareTo(String.valueOf(BookRequestStatus.PENDING)) != 0) {
+            throw new ValidationException("Status must be PENDING!");
         }
         return bookRequestRepository.insertBookRequest(bookRequest);
     }
@@ -59,11 +59,11 @@ public class BookRequestServiceImpl implements BookRequestService {
         if (null == foundBookRequest) {
             throw new ValidationException("BookRequest with given id does not exist!");
         }
-        String givenStatus = bookRequest.getBookrequestStatus().toUpperCase();
+        String givenStatus = bookRequest.getBookrequestStatus();
         if (givenStatus.compareTo(String.valueOf(BookRequestStatus.PENDING)) != 0 &&
                 givenStatus.compareTo(String.valueOf(BookRequestStatus.ACCEPTED)) != 0 &&
                 givenStatus.compareTo(String.valueOf(BookRequestStatus.REJECTED)) != 0) {
-            throw new ValidationException("Status must be pending or accepted or rejected!");
+            throw new ValidationException("Status must be PENDING or ACCEPTED or REJECTED!");
         }
         return bookRequestRepository.updateBookRequest(bookRequest);
     }

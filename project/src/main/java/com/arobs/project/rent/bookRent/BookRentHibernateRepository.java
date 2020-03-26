@@ -37,7 +37,7 @@ public class BookRentHibernateRepository {
 
     public List<BookRent> markRentalsLate(Timestamp currentTime) {
         Session session = sessionFactory.getCurrentSession();
-        String hql = "select b from BookRent b where b.bookrentReturnDate< :currentTime and b.bookrentStatus='on_going'";
+        String hql = "select b from BookRent b where b.bookrentReturnDate< :currentTime and b.bookrentStatus='ON_GOING'";
         Query selectQuery = session.createQuery(hql);
         selectQuery.setParameter("currentTime", currentTime);
         return (List<BookRent>) selectQuery.getResultList();

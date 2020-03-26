@@ -63,10 +63,10 @@ public class RentServiceImpl implements RentService {
             return new OperationObject("There are no available books! Rent request created!");
         }
         Copy foundCopy = foundAvailableCopies.get(0);
-        foundCopy.setCopyStatus(CopyStatus.RENTED.toString().toLowerCase());
+        foundCopy.setCopyStatus(CopyStatus.RENTED.toString());
         Timestamp rentalDate = new Timestamp(System.currentTimeMillis());
         Timestamp returnDate = this.createTimestampReturnDate(rentalDate);
-        BookRent bookRentToInsert = new BookRent(rentalDate, returnDate, BookRentStatus.ON_GOING.toString().toLowerCase(), 0.0, foundEmployee, foundCopy, foundBook);
+        BookRent bookRentToInsert = new BookRent(rentalDate, returnDate, BookRentStatus.ON_GOING.toString(), 0.0, foundEmployee, foundCopy, foundBook);
         bookRentRepository.insertBookRent(bookRentToInsert);
         return new OperationObject("Book rent inserted successfully!");
     }
@@ -87,18 +87,18 @@ public class RentServiceImpl implements RentService {
         }
         foundBookRent.setBookrentReturnDate(new Timestamp(System.currentTimeMillis()));
         foundBookRent.setBookrentNote(grade);
-        foundBookRent.setBookrentStatus(BookRentStatus.RETURNED.toString().toLowerCase());
+        foundBookRent.setBookrentStatus(BookRentStatus.RETURNED.toString());
         returnBook(foundBookRent);
         List<RentRequest> requestsFoundForThisBook = findWaitingAvailableCopiesRequests(foundBookRent.getBook().getId());
         Copy foundCopy = foundBookRent.getCopy();
         if (!requestsFoundForThisBook.isEmpty()) {
             RentRequest selectedRequest = requestsFoundForThisBook.get(0);
-            foundCopy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
-            selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
+            foundCopy.setCopyStatus(CopyStatus.PENDING.toString());
+            selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
             sendEmail(selectedRequest);
         } else {
-            foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+            foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString());
         }
     }
 
@@ -126,9 +126,9 @@ public class RentServiceImpl implements RentService {
             throw new ValidationException("Rent request with given id does not exist!");
         }
         Copy copy = copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
-        copy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+        copy.setCopyStatus(CopyStatus.AVAILABLE.toString());
         insertBookRent(foundRentRequest.getEmployee().getId(), foundRentRequest.getBook().getId());
-        foundRentRequest.setRentrequestStatus(RentRequestStatus.GRANTED.toString().toLowerCase());
+        foundRentRequest.setRentrequestStatus(RentRequestStatus.GRANTED.toString());
         acceptRentRequest(foundRentRequest);
     }
 
@@ -155,14 +155,14 @@ public class RentServiceImpl implements RentService {
         Copy foundCopy = copyService.findPendingCopiesForBook(foundRentRequest.getBook().getId()).get(0);
         if (!requestsFoundForThisBook.isEmpty()) {
             RentRequest selectedRequest = requestsFoundForThisBook.get(0);
-            foundCopy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
-            selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
+            foundCopy.setCopyStatus(CopyStatus.PENDING.toString());
+            selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
             sendEmail(selectedRequest);
         } else {
-            foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+            foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString());
         }
-        foundRentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
+        foundRentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString());
         declineRentRequest(foundRentRequest);
     }
 
@@ -180,7 +180,7 @@ public class RentServiceImpl implements RentService {
         Book foundBook = bookService.findBookById(bookId);
         Employee foundEmployee = employeeService.findEmployeeByID(employeeId);
         Timestamp requestDate = new Timestamp(System.currentTimeMillis());
-        String rentRequestStatus = RentRequestStatus.WAITING_AVAILABLE.toString().toLowerCase();
+        String rentRequestStatus = RentRequestStatus.WAITING_AVAILABLE.toString();
         RentRequest rentRequestToInsert = new RentRequest(requestDate, rentRequestStatus, foundEmployee, foundBook);
         rentRequestRepository.insertRentRequest(rentRequestToInsert);
     }
@@ -192,7 +192,7 @@ public class RentServiceImpl implements RentService {
         if (null == foundBookRent) {
             throw new ValidationException("Book rent not found!");
         }
-        if (foundBookRent.getBookrentStatus().compareTo(BookRentStatus.ON_GOING.toString().toLowerCase()) != 0) {
+        if (foundBookRent.getBookrentStatus().compareTo(BookRentStatus.ON_GOING.toString()) != 0) {
             throw new ValidationException("You can not extend rental date! Book does not have on_going status!");
         }
         Timestamp rentalDate = foundBookRent.getBookrentRentalDate();
@@ -216,7 +216,7 @@ public class RentServiceImpl implements RentService {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         List<BookRent> lateRentals = bookRentRepository.markRentalsLate(currentTime);
         lateRentals.forEach(bookRent -> {
-            bookRent.setBookrentStatus("late");
+            bookRent.setBookrentStatus("LATE");
             Employee foundEmployee = bookRent.getEmployee();
             banEmployee(bookRent);
             foundEmployee.setBanned(true);
@@ -265,7 +265,7 @@ public class RentServiceImpl implements RentService {
                     calendar.setTime(rentRequest.getEmailSentDate());
                     calendar.add(Calendar.HOUR_OF_DAY, 24);
                     if (currentTime.after(calendar.getTime())) {
-                        rentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
+                        rentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString());
                         rentRequestRepository.updateRentRequest(rentRequest);
                         Book book = rentRequest.getBook();
                         List<Copy> pendingCopies = copyService.findPendingCopiesForBook(book.getId());
@@ -280,12 +280,12 @@ public class RentServiceImpl implements RentService {
         List<RentRequest> requestsFoundForThisBook = findWaitingAvailableCopiesRequests(bookId);
         if (!requestsFoundForThisBook.isEmpty()) {
             RentRequest selectedRequest = requestsFoundForThisBook.get(0);
-            copy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
-            selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
+            copy.setCopyStatus(CopyStatus.PENDING.toString());
+            selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
             sendEmail(selectedRequest);
         } else {
-            copy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
+            copy.setCopyStatus(CopyStatus.AVAILABLE.toString());
         }
     }
 }

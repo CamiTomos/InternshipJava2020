@@ -32,9 +32,9 @@ public class CopyServiceImpl implements CopyService {
     @Override
     @Transactional
     public Copy insertCopy(Copy copy) throws ValidationException {
-        String copyStatus = copy.getCopyStatus().toUpperCase();
+        String copyStatus = copy.getCopyStatus();
         if (copyStatus.compareTo(String.valueOf(CopyStatus.AVAILABLE)) != 0) {
-            throw new ValidationException("Status must be available!");
+            throw new ValidationException("Status must be AVAILABLE!");
         }
         Book foundBook = bookService.findBookById(copy.getBook().getId());
         if (null == foundBook) {
@@ -57,11 +57,11 @@ public class CopyServiceImpl implements CopyService {
     @Override
     @Transactional
     public Copy updateCopy(Copy copy) throws ValidationException {
-        String copyStatus = copy.getCopyStatus().toUpperCase();
+        String copyStatus = copy.getCopyStatus();
         if (copyStatus.compareTo(String.valueOf(CopyStatus.AVAILABLE)) != 0 &&
                 copyStatus.compareTo(String.valueOf(CopyStatus.PENDING)) != 0 &&
                 copyStatus.compareTo(String.valueOf(CopyStatus.RENTED)) != 0) {
-            throw new ValidationException("Status must be available, pending or rented!");
+            throw new ValidationException("Status must be AVAILABLE, PENDING or RENTED!");
         }
         if (hibernateRepository.findCopyById(copy.getId()) == null) {
             throw new ValidationException("Copy with given id does not exist!");

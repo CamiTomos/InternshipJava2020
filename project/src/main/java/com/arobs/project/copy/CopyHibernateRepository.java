@@ -49,14 +49,14 @@ public class CopyHibernateRepository {
 
     public List<Copy> findAvailableCopiesForBook(int bookId) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("select c from Copy c inner join c.book where c.book.id= :id and c.copyStatus='available' and c.copyFlag=false")
+        return session.createQuery("select c from Copy c inner join c.book where c.book.id= :id and c.copyStatus='AVAILABLE' and c.copyFlag=false")
                 .setParameter("id", bookId)
                 .getResultList();
     }
 
     public List<Copy> findPendingCopiesForBook(int bookId) {
         Session session = sessionFactory.getCurrentSession();
-        return session.createQuery("select c from Copy c inner join c.book where c.book.id= :id and c.copyStatus='pending'")
+        return session.createQuery("select c from Copy c inner join c.book where c.book.id= :id and c.copyStatus='PENDING'")
                 .setParameter("id", bookId)
                 .getResultList();
     }
