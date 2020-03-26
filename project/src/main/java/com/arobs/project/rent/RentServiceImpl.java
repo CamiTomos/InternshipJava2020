@@ -61,7 +61,7 @@ public class RentServiceImpl implements RentService {
         foundCopy.setCopyStatus(CopyStatus.RENTED.toString().toLowerCase());
         Timestamp rentalDate = new Timestamp(System.currentTimeMillis());
         Timestamp returnDate = this.createTimestampReturnDate(rentalDate);
-        BookRent bookRentToInsert = new BookRent(0, rentalDate, returnDate, BookRentStatus.ON_GOING.toString().toLowerCase(), 0.0, foundEmployee, foundCopy, foundBook);
+        BookRent bookRentToInsert = new BookRent(rentalDate, returnDate, BookRentStatus.ON_GOING.toString().toLowerCase(), 0.0, foundEmployee, foundCopy, foundBook);
         bookRentRepository.insertBookRent(bookRentToInsert);
         return "Book rent inserted successfully!";
     }
@@ -83,7 +83,7 @@ public class RentServiceImpl implements RentService {
         foundBookRent.setBookrentReturnDate(new Timestamp(System.currentTimeMillis()));
         foundBookRent.setBookrentNote(grade);
         foundBookRent.setBookrentStatus(BookRentStatus.RETURNED.toString().toLowerCase());
-        returnBook(foundBookRent);//here, the book is returned
+        returnBook(foundBookRent);
         List<RentRequest> requestsFoundForThisBook = findWaitingAvailableCopiesRequests(foundBookRent.getBook().getId());
         Copy foundCopy = foundBookRent.getCopy();
         if (!requestsFoundForThisBook.isEmpty()) {
@@ -91,10 +91,26 @@ public class RentServiceImpl implements RentService {
             foundCopy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
             selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
-            sendEmail(selectedRequest);//here, the email is sent
+            sendEmail(selectedRequest);
         } else {
             foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
         }
+    }
+
+    private List<RentRequest> findWaitingAvailableCopiesRequests(int bookId) {
+        return rentRequestRepository.findWaitingAvailableCopiesRequests(bookId);
+    }
+
+    private BookRent findBookRentById(int id) throws ValidationException {
+        BookRent foundBookRent = bookRentRepository.getBookRentById(id);
+        if (null == foundBookRent) {
+            throw new ValidationException("Book rent not found!");
+        }
+        return foundBookRent;
+    }
+
+    private void returnBook(BookRent bookRent) {
+        bookRentRepository.updateBookRent(bookRent);
     }
 
     @Override
@@ -111,6 +127,18 @@ public class RentServiceImpl implements RentService {
         acceptRentRequest(foundRentRequest);
     }
 
+    private void acceptRentRequest(RentRequest rentRequest) {
+        rentRequestRepository.updateRentRequest(rentRequest);
+    }
+
+    private RentRequest getRentRequestById(int id) throws ValidationException {
+        RentRequest rentRequest = rentRequestRepository.getRentRequestById(id);
+        if (null == rentRequest) {
+            throw new ValidationException("There is no rent request with given id!");
+        }
+        return rentRequest;
+    }
+
     @Override
     @Transactional
     public void declineRentRequest(int id) throws ValidationException {
@@ -125,12 +153,20 @@ public class RentServiceImpl implements RentService {
             foundCopy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
             selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
-            sendEmail(selectedRequest);//here, the email is sent
+            sendEmail(selectedRequest);
         } else {
             foundCopy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
         }
         foundRentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
         declineRentRequest(foundRentRequest);
+    }
+
+    private void sendEmail(RentRequest selectedRequest) {
+        rentRequestRepository.updateRentRequest(selectedRequest);
+    }
+
+    private void declineRentRequest(RentRequest rentRequest) {
+        rentRequestRepository.updateRentRequest(rentRequest);
     }
 
     @Override
@@ -140,37 +176,8 @@ public class RentServiceImpl implements RentService {
         Employee foundEmployee = employeeService.findEmployeeByID(employeeId);
         Timestamp requestDate = new Timestamp(System.currentTimeMillis());
         String rentRequestStatus = RentRequestStatus.WAITING_AVAILABLE.toString().toLowerCase();
-        RentRequest rentRequestToInsert = new RentRequest(0, requestDate, rentRequestStatus, foundEmployee, foundBook);
+        RentRequest rentRequestToInsert = new RentRequest(requestDate, rentRequestStatus, foundEmployee, foundBook);
         rentRequestRepository.insertRentRequest(rentRequestToInsert);
-    }
-
-    @Transactional
-    public void acceptRentRequest(RentRequest rentRequest) {
-        rentRequestRepository.updateRentRequest(rentRequest);
-    }
-
-
-    private RentRequest getRentRequestById(int id) throws ValidationException {
-        RentRequest rentRequest = rentRequestRepository.getRentRequestById(id);
-        if (null == rentRequest) {
-            throw new ValidationException("There is no rent request with given id!");
-        }
-        return rentRequest;
-    }
-
-    @Transactional
-    public void declineRentRequest(RentRequest rentRequest) {
-        rentRequestRepository.updateRentRequest(rentRequest);
-    }
-
-    @Transactional
-    public List<RentRequest> findWaitingAvailableCopiesRequests(int bookId) {
-        return rentRequestRepository.findWaitingAvailableCopiesRequests(bookId);
-    }
-
-    @Transactional
-    public void sendEmail(RentRequest selectedRequest) {
-        rentRequestRepository.updateRentRequest(selectedRequest);
     }
 
     @Override
@@ -217,45 +224,27 @@ public class RentServiceImpl implements RentService {
                     calendar.setTime(rentRequest.getEmailSentDate());
                     calendar.add(Calendar.HOUR_OF_DAY, 24);
                     if (currentTime.after(calendar.getTime())) {
-                        RentRequest rentRequestToBeUpdated = rentRequest;
-                        rentRequestToBeUpdated.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
-                        rentRequestRepository.updateRentRequest(rentRequestToBeUpdated);
-                        Book book = rentRequestToBeUpdated.getBook();
+                        rentRequest.setRentrequestStatus(RentRequestStatus.DECLINED.toString().toLowerCase());
+                        rentRequestRepository.updateRentRequest(rentRequest);
+                        Book book = rentRequest.getBook();
                         List<Copy> pendingCopies = copyService.findPendingCopiesForBook(book.getId());
                         Copy copyToBeUpdated = pendingCopies.get(0);
-                        try {
-                            notifyNextEmployee(book.getId(), copyToBeUpdated);
-                        } catch (ValidationException e) {
-                            System.out.println("Copy could not be marked as available!");
-                        }
+                        notifyNextEmployee(book.getId(), copyToBeUpdated);
                     }
                 }
         );
     }
 
-    private void notifyNextEmployee(int bookId, Copy copy) throws ValidationException {
+    private void notifyNextEmployee(int bookId, Copy copy) {
         List<RentRequest> requestsFoundForThisBook = findWaitingAvailableCopiesRequests(bookId);
         if (!requestsFoundForThisBook.isEmpty()) {
             RentRequest selectedRequest = requestsFoundForThisBook.get(0);
             copy.setCopyStatus(CopyStatus.PENDING.toString().toLowerCase());
             selectedRequest.setRentrequestStatus(RentRequestStatus.WAITING_CONFIRMATION.toString().toLowerCase());
             selectedRequest.setEmailSentDate(new Timestamp(System.currentTimeMillis()));
-            sendEmail(selectedRequest);//here, the email is sent
+            sendEmail(selectedRequest);
         } else {
             copy.setCopyStatus(CopyStatus.AVAILABLE.toString().toLowerCase());
         }
-    }
-
-    @Transactional
-    public void returnBook(BookRent bookRent) {
-        bookRentRepository.updateBookRent(bookRent);
-    }
-
-    private BookRent findBookRentById(int id) throws ValidationException {
-        BookRent foundBookRent = bookRentRepository.getBookRentById(id);
-        if (null == foundBookRent) {
-            throw new ValidationException("Book rent not found!");
-        }
-        return foundBookRent;
     }
 }

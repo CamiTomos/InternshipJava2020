@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Validated
 @RestController("bookRentController")
@@ -43,7 +43,7 @@ public class BookRentController {
     }
 
     @PutMapping(value = "/bookRents/extend/{id}")
-    public ResponseEntity<?> handleExtendDeadline(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleExtendDeadline(@NotNull @PathVariable int id) {
         try {
             log.info("Deadline extended!");
             rentService.extendDeadlineBookRent(id);
@@ -58,7 +58,7 @@ public class BookRentController {
     }
 
     @PutMapping(value = "/bookRents/return/{id}/{grade}")
-    public ResponseEntity<?> handleReturnBook(@NotBlank @PathVariable int id, @NotBlank @PathVariable double grade) {
+    public ResponseEntity<?> handleReturnBook(@NotNull @PathVariable int id, @NotNull @PathVariable double grade) {
         if (grade < 1 || grade > 5) {
             log.error("Grade must be between 1 and 5!");
             return new ResponseEntity<>("Grade must be between 1 and 5!", HttpStatus.NOT_ACCEPTABLE);

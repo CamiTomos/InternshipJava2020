@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +46,7 @@ public class EmployeeController {
     }
 
     @DeleteMapping(value = "/employees/{id}")
-    public ResponseEntity<String> handleDeleteEmployee(@NotBlank @PathVariable int id) {
+    public ResponseEntity<String> handleDeleteEmployee(@NotNull @PathVariable int id) {
         if (service.deleteEmployee(id)) {
             log.info("Employee successfully deleted!");
             return new ResponseEntity<>("Employee successfully deleted!", HttpStatus.OK);
@@ -73,7 +73,7 @@ public class EmployeeController {
     }
 
     @GetMapping(value = "/employees/{id}")
-    public ResponseEntity<?> handleFindEmployeeById(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleFindEmployeeById(@NotNull @PathVariable int id) {
         try {
             log.info("Employee found!");
             EmployeeDTO foundEmployee = ProjectModelMapper.convertEmployeeToDTO(service.findEmployeeByID(id));

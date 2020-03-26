@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +39,7 @@ public class CopyController {
     }
 
     @GetMapping(value = "/copies/{id}")
-    public ResponseEntity<?> handleFindCopyById(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleFindCopyById(@NotNull @PathVariable int id) {
         try {
             log.info("Copy found!");
             CopyDTO foundCopy = ProjectModelMapper.convertCopyToDTO(copyService.findCopyById(id));
@@ -84,7 +84,7 @@ public class CopyController {
     }
 
     @DeleteMapping(value = "/copies/{id}")
-    public ResponseEntity<?> handleDeleteCopy(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleDeleteCopy(@NotNull @PathVariable int id) {
         boolean isCopyDeleted = copyService.deleteCopy(id);
         if (isCopyDeleted) {
             log.info("Copy deleted successfully!");

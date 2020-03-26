@@ -1,8 +1,12 @@
 package com.arobs.project.dtos;
 
+import javax.validation.constraints.NotNull;
+
 public class BookRentDTO {
     private int id;
+    @NotNull
     private int employeeId;
+    @NotNull
     private int bookId;
 
     public BookRentDTO() {

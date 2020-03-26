@@ -86,24 +86,15 @@ public class CopyServiceImpl implements CopyService {
     @Transactional
     public List<Copy> findAvailableCopiesForBook(int bookId) {
         return hibernateRepository.findAvailableCopiesForBook(bookId);
-//                .stream()
-//                .map(ProjectModelMapper::convertCopyToDTO)
-//                .collect(Collectors.toList());
     }
 
     @Override
     public List<Copy> findPendingCopiesForBook(int bookId) {
         return hibernateRepository.findPendingCopiesForBook(bookId);
-//                .stream()
-//                .map(ProjectModelMapper::convertCopyToDTO)
-//                .collect(Collectors.toList());
     }
 
     @Override
     public List<Copy> findRentedCopiesForBook(int bookId) {
         return hibernateRepository.findRentedCopiesForBook(bookId);
-//                .stream()
-//                .map(ProjectModelMapper::convertCopyToDTO)
-//                .collect(Collectors.toList());
     }
 }

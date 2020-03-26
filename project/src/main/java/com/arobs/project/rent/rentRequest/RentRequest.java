@@ -36,8 +36,8 @@ public class RentRequest implements Serializable {
     public RentRequest() {
     }
 
-    public RentRequest(int id, Timestamp rentrequestRequestDate, String rentrequestStatus, Employee employee, Book book) {
-        this.id = id;
+    public RentRequest(Timestamp rentrequestRequestDate, String rentrequestStatus, Employee employee, Book book) {
+        this.id = 0;
         this.rentrequestRequestDate = rentrequestRequestDate;
         this.rentrequestStatus = rentrequestStatus;
         this.employee = employee;

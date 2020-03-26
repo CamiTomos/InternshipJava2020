@@ -44,8 +44,8 @@ public class BookRent implements Serializable {
     public BookRent() {
     }
 
-    public BookRent(int id, Timestamp bookrentRentalDate, Timestamp bookrentReturnDate, String bookrentStatus, Double bookrentNote, Employee employee, Copy copy, Book book) {
-        this.id = id;
+    public BookRent(Timestamp bookrentRentalDate, Timestamp bookrentReturnDate, String bookrentStatus, Double bookrentNote, Employee employee, Copy copy, Book book) {
+        this.id = 0;
         this.bookrentRentalDate = bookrentRentalDate;
         this.bookrentReturnDate = bookrentReturnDate;
         this.bookrentStatus = bookrentStatus;

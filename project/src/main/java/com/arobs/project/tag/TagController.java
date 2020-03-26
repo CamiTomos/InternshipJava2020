@@ -12,7 +12,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +61,7 @@ public class TagController {
     }
 
     @GetMapping(value = "/tags/{id}")
-    public ResponseEntity<?> handleFindTagById(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleFindTagById(@NotNull @PathVariable int id) {
         try {
             TagDTO foundTag = ProjectModelMapper.convertTagToDTO(service.findTagById(id));
             log.info("Tag found!");
@@ -93,7 +92,7 @@ public class TagController {
     }
 
     @DeleteMapping(value = "/tags/{id}")
-    public ResponseEntity<?> handleDeleteTag(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleDeleteTag(@NotNull @PathVariable int id) {
         boolean isDeleted = service.deleteTag(id);
         if (!isDeleted) {
             log.error("Sorry! This tag does not exist!");

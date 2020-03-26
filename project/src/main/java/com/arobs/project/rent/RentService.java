@@ -14,6 +14,8 @@ public interface RentService {
     void insertRentRequest(int employeeId, int bookId) throws ValidationException;
 
     void extendDeadlineBookRent(int id) throws ValidationException;
+
     void markRentalsLate();
+
     void checkEmailConfirmation();
 }

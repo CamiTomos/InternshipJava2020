@@ -12,7 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +39,7 @@ public class BookController {
     }
 
     @GetMapping(value = "/books/{id}")
-    public ResponseEntity<?> handleFindBookById(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleFindBookById(@NotNull @PathVariable int id) {
         try {
             log.info("Book successfully found!");
             BookDTO foundBook = ProjectModelMapper.convertBookToDTO(bookService.findBookById(id));
@@ -77,7 +77,7 @@ public class BookController {
     }
 
     @DeleteMapping(value = "/books/{id}")
-    public ResponseEntity<String> handleDeleteBook(@NotBlank @PathVariable int id) {
+    public ResponseEntity<String> handleDeleteBook(@NotNull @PathVariable int id) {
         if (bookService.deleteBook(id)) {
             log.info("Book deleted!");
             return new ResponseEntity<>("Book was deleted successfully!", HttpStatus.OK);

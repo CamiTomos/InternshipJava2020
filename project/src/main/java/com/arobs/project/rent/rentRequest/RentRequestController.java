@@ -13,7 +13,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Validated
 @RestController("rentRequestController")
@@ -43,7 +43,7 @@ public class RentRequestController {
     }
 
     @PutMapping(value = "/rentRequests/accept/{id}")
-    public ResponseEntity<?> handleAcceptRequest(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleAcceptRequest(@NotNull @PathVariable int id) {
         try {
             log.info("Rent request successfully accepted!");
             rentService.acceptRentRequest(id);
@@ -58,7 +58,7 @@ public class RentRequestController {
     }
 
     @PutMapping(value = "/rentRequests/decline/{id}")
-    public ResponseEntity<?> handleDeclineRequest(@NotBlank @PathVariable int id) {
+    public ResponseEntity<?> handleDeclineRequest(@NotNull @PathVariable int id) {
         try {
             log.info("Rent request successfully declined!");
             rentService.declineRentRequest(id);
