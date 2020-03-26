@@ -36,12 +36,16 @@ public class EmployeeHibernateRepository {
 
     public Employee updateEmployee(Employee employee) {
         Session session = sessionFactory.getCurrentSession();
-        String hql = "update Employee set employeeEmail= :email, employeeName= :name, employeeRole= :role, employeePassword= MD5(:password) where id= :id";
+        String hql = "update Employee set employeeEmail= :email, employeeName= :name, employeeRole= :role, " +
+                "employeePassword= MD5(:password), isBanned= :isBanned, lastDayOfBan= :day " +
+                "where id= :id";
         session.createQuery(hql)
                 .setParameter("email", employee.getEmployeeEmail())
                 .setParameter("name", employee.getEmployeeName())
                 .setParameter("role", employee.getEmployeeRole())
                 .setParameter("password", employee.getEmployeePassword())
+                .setParameter("isBanned", employee.isBanned())
+                .setParameter("day", employee.getLastDayOfBan())
                 .setParameter("id", employee.getId())
                 .executeUpdate();
         return employee;

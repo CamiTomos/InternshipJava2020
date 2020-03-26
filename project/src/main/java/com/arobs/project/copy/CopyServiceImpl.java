@@ -89,12 +89,9 @@ public class CopyServiceImpl implements CopyService {
     }
 
     @Override
+    @Transactional
     public List<Copy> findPendingCopiesForBook(int bookId) {
         return hibernateRepository.findPendingCopiesForBook(bookId);
     }
 
-    @Override
-    public List<Copy> findRentedCopiesForBook(int bookId) {
-        return hibernateRepository.findRentedCopiesForBook(bookId);
-    }
 }

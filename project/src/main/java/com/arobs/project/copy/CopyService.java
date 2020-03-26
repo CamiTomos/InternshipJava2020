@@ -18,6 +18,4 @@ public interface CopyService {
     List<Copy> findAvailableCopiesForBook(int bookId);
 
     List<Copy> findPendingCopiesForBook(int bookId);
-
-    List<Copy> findRentedCopiesForBook(int bookId);
 }

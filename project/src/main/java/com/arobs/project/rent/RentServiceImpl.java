@@ -10,6 +10,7 @@ import com.arobs.project.enums.BookRentStatus;
 import com.arobs.project.enums.CopyStatus;
 import com.arobs.project.enums.RentRequestStatus;
 import com.arobs.project.exception.ValidationException;
+import com.arobs.project.operationObjects.OperationObject;
 import com.arobs.project.rent.bookRent.BookRent;
 import com.arobs.project.rent.bookRent.BookRentHibernateRepository;
 import com.arobs.project.rent.rentRequest.RentRequest;
@@ -24,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service("rentService")
 @EnableTransactionManagement
@@ -48,14 +50,17 @@ public class RentServiceImpl implements RentService {
 
     @Override
     @Transactional
-    public String insertBookRent(int employeeId, int bookId) throws ValidationException {
-        Book foundBook = bookService.findBookById(bookId);
+    public OperationObject insertBookRent(int employeeId, int bookId) throws ValidationException {
         Employee foundEmployee = employeeService.findEmployeeByID(employeeId);
+        if (foundEmployee.isBanned()) {
+            throw new ValidationException("The employee is banned!");
+        }
+        Book foundBook = bookService.findBookById(bookId);
         List<Copy> foundAvailableCopies = copyService.findAvailableCopiesForBook(foundBook.getId());
         if (foundAvailableCopies.isEmpty()) {
             log.info("No available copy for this book found!");
             insertRentRequest(employeeId, bookId);
-            return "There are no available books! Rent request created!";
+            return new OperationObject("There are no available books! Rent request created!");
         }
         Copy foundCopy = foundAvailableCopies.get(0);
         foundCopy.setCopyStatus(CopyStatus.RENTED.toString().toLowerCase());
@@ -63,7 +68,7 @@ public class RentServiceImpl implements RentService {
         Timestamp returnDate = this.createTimestampReturnDate(rentalDate);
         BookRent bookRentToInsert = new BookRent(rentalDate, returnDate, BookRentStatus.ON_GOING.toString().toLowerCase(), 0.0, foundEmployee, foundCopy, foundBook);
         bookRentRepository.insertBookRent(bookRentToInsert);
-        return "Book rent inserted successfully!";
+        return new OperationObject("Book rent inserted successfully!");
     }
 
     private Timestamp createTimestampReturnDate(Timestamp timestamp) {
@@ -97,6 +102,10 @@ public class RentServiceImpl implements RentService {
         }
     }
 
+    private void returnBook(BookRent bookRent) {
+        bookRentRepository.updateBookRent(bookRent);
+    }
+
     private List<RentRequest> findWaitingAvailableCopiesRequests(int bookId) {
         return rentRequestRepository.findWaitingAvailableCopiesRequests(bookId);
     }
@@ -107,10 +116,6 @@ public class RentServiceImpl implements RentService {
             throw new ValidationException("Book rent not found!");
         }
         return foundBookRent;
-    }
-
-    private void returnBook(BookRent bookRent) {
-        bookRentRepository.updateBookRent(bookRent);
     }
 
     @Override
@@ -210,7 +215,43 @@ public class RentServiceImpl implements RentService {
     public void markRentalsLate() {
         Timestamp currentTime = new Timestamp(System.currentTimeMillis());
         List<BookRent> lateRentals = bookRentRepository.markRentalsLate(currentTime);
-        lateRentals.forEach(bookRent -> bookRent.setBookrentStatus("late"));
+        lateRentals.forEach(bookRent -> {
+            bookRent.setBookrentStatus("late");
+            Employee foundEmployee = bookRent.getEmployee();
+            banEmployee(bookRent);
+            foundEmployee.setBanned(true);
+        });
+        List<Employee> bannedEmplyees = employeeService.findAllEmployees()
+                .stream()
+                .filter(employee -> employee.isBanned())
+                .collect(Collectors.toList());
+        permitRentForEmployees(bannedEmplyees);
+    }
+
+    private void banEmployee(BookRent foundBookRent) {
+        Employee foundEmployee = foundBookRent.getEmployee();
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+        Calendar currentCalendar = Calendar.getInstance();
+        currentCalendar.setTime(currentTime);
+        Calendar returnCalendar = Calendar.getInstance();
+        returnCalendar.setTime(foundBookRent.getBookrentReturnDate());
+        int daysDifference = currentCalendar.get(Calendar.DAY_OF_WEEK) - returnCalendar.get(Calendar.DAY_OF_WEEK);
+        if (daysDifference > 10) {
+            daysDifference *= 2;
+            returnCalendar.add(Calendar.DAY_OF_WEEK, daysDifference);
+        } else {
+            returnCalendar.add(Calendar.DAY_OF_WEEK, 10);
+        }
+        foundEmployee.setLastDayOfBan(new Timestamp(returnCalendar.getTime().getTime()));
+    }
+
+    private void permitRentForEmployees(List<Employee> bannedEmployees) {
+        bannedEmployees.forEach(employee -> {
+            Timestamp currentTime = new Timestamp(System.currentTimeMillis());
+            if (employee.getLastDayOfBan() != null && currentTime.after(employee.getLastDayOfBan())) {
+                employee.setBanned(false);
+            }
+        });
     }
 
     @Override

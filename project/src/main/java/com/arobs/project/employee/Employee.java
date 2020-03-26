@@ -1,11 +1,12 @@
 package com.arobs.project.employee;
 
-import com.arobs.project.rent.bookRent.BookRent;
 import com.arobs.project.bookRequest.BookRequest;
+import com.arobs.project.rent.bookRent.BookRent;
 import com.arobs.project.rent.rentRequest.RentRequest;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -30,6 +31,12 @@ public class Employee implements Serializable {
     @Column(name = "employeeEmail")
     private String employeeEmail;
 
+    @Column(name = "isBanned")
+    private boolean isBanned;
+
+    @Column(name = "lastDayOfBan")
+    private Timestamp lastDayOfBan;
+
     @OneToMany(mappedBy = "employee")
     private Set<RentRequest> rentRequests = new HashSet<>();
 
@@ -42,16 +49,18 @@ public class Employee implements Serializable {
     public Employee() {
     }
 
-    public Employee(int id, String employeeName, String employeeRole, String employeePassword, String employeeEmail) {
+    public Employee(int id, String employeeName, String employeeRole, String employeePassword, String employeeEmail, boolean isBanned, Timestamp lastDayOfBan) {
         this.id = id;
         this.employeeName = employeeName;
         this.employeeRole = employeeRole;
         this.employeePassword = employeePassword;
         this.employeeEmail = employeeEmail;
+        this.isBanned = isBanned;
+        this.lastDayOfBan = lastDayOfBan;
     }
 
-    public Employee(String employeeName, String employeeRole, String employeePassword, String employeeEmail) {
-        this(1, employeeName, employeeRole, employeePassword, employeeEmail);
+    public Employee(String employeeName, String employeeRole, String employeePassword, String employeeEmail, boolean isBanned, Timestamp lastDayOfBan) {
+        this(1, employeeName, employeeRole, employeePassword, employeeEmail, isBanned, lastDayOfBan);
     }
 
     public int getId() {
@@ -92,6 +101,22 @@ public class Employee implements Serializable {
 
     public void setEmployeeEmail(String employeeEmail) {
         this.employeeEmail = employeeEmail;
+    }
+
+    public boolean isBanned() {
+        return isBanned;
+    }
+
+    public void setBanned(boolean banned) {
+        isBanned = banned;
+    }
+
+    public Timestamp getLastDayOfBan() {
+        return lastDayOfBan;
+    }
+
+    public void setLastDayOfBan(Timestamp lastDayOfBan) {
+        this.lastDayOfBan = lastDayOfBan;
     }
 
     public Set<RentRequest> getRentRequests() {
@@ -138,7 +163,9 @@ public class Employee implements Serializable {
                 ", employeeName='" + employeeName + '\'' +
                 ", employeeRole='" + employeeRole + '\'' +
                 ", employeePassword='" + employeePassword + '\'' +
-                ", employeeEmail='" + employeeEmail +
+                ", employeeEmail='" + employeeEmail + '\'' +
+                ", isBanned=" + isBanned +
+                ", lastDayOfBan=" + lastDayOfBan +
                 '}';
     }
 }

@@ -13,16 +13,19 @@ public class EmployeeDTO {
     private String employeePassword;
     @NotNull
     private String employeeEmail;
+    @NotNull
+    private boolean isBanned;
 
     public EmployeeDTO() {
     }
 
-    public EmployeeDTO(int id, String employeeName, String employeeRole, String employeePassword, String employeeEmail) {
+    public EmployeeDTO(int id, String employeeName, String employeeRole, String employeePassword, String employeeEmail, boolean isBanned) {
         this.id = id;
         this.employeeName = employeeName;
         this.employeeRole = employeeRole;
         this.employeePassword = employeePassword;
         this.employeeEmail = employeeEmail;
+        this.isBanned = isBanned;
     }
 
     public int getId() {
@@ -65,6 +68,14 @@ public class EmployeeDTO {
         this.employeeEmail = employeeEmail;
     }
 
+    public boolean isBanned() {
+        return isBanned;
+    }
+
+    public void setBanned(boolean banned) {
+        isBanned = banned;
+    }
+
     @Override
     public String toString() {
         return "EmployeeDTO{" +
@@ -73,6 +84,7 @@ public class EmployeeDTO {
                 ", employeeRole='" + employeeRole + '\'' +
                 ", employeePassword='" + employeePassword + '\'' +
                 ", employeeEmail='" + employeeEmail + '\'' +
+                ", isBanned=" + isBanned +
                 '}';
     }
 

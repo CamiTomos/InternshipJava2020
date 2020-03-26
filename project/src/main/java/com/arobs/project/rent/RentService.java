@@ -1,9 +1,10 @@
 package com.arobs.project.rent;
 
 import com.arobs.project.exception.ValidationException;
+import com.arobs.project.operationObjects.OperationObject;
 
 public interface RentService {
-    String insertBookRent(int employeeId, int bookId) throws ValidationException;
+    OperationObject insertBookRent(int employeeId, int bookId) throws ValidationException;
 
     void returnBook(int id, double grade) throws ValidationException;
 

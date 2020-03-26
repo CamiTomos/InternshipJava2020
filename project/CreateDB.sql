@@ -12,6 +12,12 @@ create table employees(
 );
 
 alter table employees
+add isBanned bool not null;
+
+alter table employees
+add lastDayOfBan datetime;
+
+alter table employees
 modify column employeePassword varchar(50);
 select * from employees;
 create table books(

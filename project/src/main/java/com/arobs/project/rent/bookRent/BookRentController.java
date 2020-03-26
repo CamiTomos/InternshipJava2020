@@ -32,7 +32,8 @@ public class BookRentController {
     public ResponseEntity<?> handleInsertBookRent(@Valid @RequestBody BookRentDTO bookRentDTO) {
         try {
             log.info("Book rent inserted!");
-            return new ResponseEntity<>(rentService.insertBookRent(bookRentDTO.getEmployeeId(), bookRentDTO.getBookId()), HttpStatus.OK);
+            String returnedMessage = rentService.insertBookRent(bookRentDTO.getEmployeeId(), bookRentDTO.getBookId()).getMessage();
+            return new ResponseEntity<>(returnedMessage, HttpStatus.OK);
         } catch (ValidationException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
